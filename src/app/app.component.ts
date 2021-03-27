@@ -6,21 +6,17 @@ import { User, Role } from './_models';
 
 @Component({ selector: 'app', templateUrl: 'app.component.html' })
 export class AppComponent {
-    currentUser: User;
+    user: User;
 
-    constructor(
-        private router: Router,
-        private authenticationService: AuthenticationService
-    ) {
-        this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
+    constructor(private authenticationService: AuthenticationService) {
+        this.authenticationService.user.subscribe(x => this.user = x);
     }
 
     get isAdmin() {
-        return this.currentUser && this.currentUser.role === Role.Admin;
+        return this.user && this.user.role === Role.Admin;
     }
 
     logout() {
         this.authenticationService.logout();
-        this.router.navigate(['/login']);
     }
 }

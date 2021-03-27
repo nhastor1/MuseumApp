@@ -31,6 +31,7 @@ export declare const rules: {
     };
     "no-any": boolean;
     "no-empty-interface": boolean;
+    "no-for-in": boolean;
     "no-import-side-effect": boolean;
     "no-inferrable-types": {
         options: string[];
@@ -67,6 +68,7 @@ export declare const rules: {
     "function-constructor": boolean;
     "label-position": boolean;
     "no-arg": boolean;
+    "no-async-without-await": boolean;
     "no-bitwise": boolean;
     "no-conditional-assignment": boolean;
     "no-console": boolean;
@@ -89,6 +91,7 @@ export declare const rules: {
     "no-null-keyword": boolean;
     "no-null-undefined-union": boolean;
     "no-object-literal-type-assertion": boolean;
+    "no-promise-as-boolean": boolean;
     "no-return-await": boolean;
     "no-shadowed-variable": boolean;
     "no-string-literal": boolean;
@@ -103,7 +106,6 @@ export declare const rules: {
     "no-unsafe-any": boolean;
     "no-unsafe-finally": boolean;
     "no-unused-expression": boolean;
-    "no-use-before-declare": boolean;
     "no-var-keyword": boolean;
     "no-void-expression": boolean;
     "prefer-conditional-expression": boolean;
@@ -111,6 +113,8 @@ export declare const rules: {
     "restrict-plus-operands": boolean;
     "static-this": boolean;
     "strict-boolean-expressions": boolean;
+    "strict-string-expressions": boolean;
+    "strict-comparisons": boolean;
     "strict-type-predicates": boolean;
     "switch-default": boolean;
     "triple-equals": boolean;
@@ -122,6 +126,7 @@ export declare const rules: {
     indent: {
         options: string[];
     };
+    "invalid-void": boolean;
     "linebreak-style": {
         options: string;
     };

@@ -7,7 +7,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { fakeBackendProvider } from './_helpers';
 
 import { AppComponent } from './app.component';
-import { appRoutingModule } from './app.routing';
+import { AppRoutingModule } from './app-routing.module';
 
 import { JwtInterceptor, ErrorInterceptor } from './_helpers';
 import { HomeComponent } from './home';
@@ -19,7 +19,7 @@ import { LoginComponent } from './login';
         BrowserModule,
         ReactiveFormsModule,
         HttpClientModule,
-        appRoutingModule
+        AppRoutingModule
     ],
     declarations: [
         AppComponent,

@@ -1,11 +1,11 @@
 ﻿import { Injectable } from '@angular/core';
 import { HttpRequest, HttpResponse, HttpHandler, HttpEvent, HttpInterceptor, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { delay, mergeMap, materialize, dematerialize } from 'rxjs/operators';
+import { delay, materialize, dematerialize } from 'rxjs/operators';
 
-import { User, Role } from '@app/_models';
+import { Role } from '@app/_models';
 
-const users: User[] = [
+const users = [
     { id: 1, username: 'admin', password: 'admin', firstName: 'Admin', lastName: 'User', role: Role.Admin },
     { id: 2, username: 'user', password: 'user', firstName: 'Normal', lastName: 'User', role: Role.User }
 ];
@@ -15,12 +15,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const { url, method, headers, body } = request;
 
-        // wrap in delayed observable to simulate server api call
-        return of(null)
-            .pipe(mergeMap(handleRoute))
-            .pipe(materialize()) // call materialize and dematerialize to ensure delay even if an error is thrown (https://github.com/Reactive-Extensions/RxJS/issues/648)
-            .pipe(delay(500))
-            .pipe(dematerialize());
+        return handleRoute();        
 
         function handleRoute() {
             switch (true) {
@@ -71,15 +66,18 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         // helper functions
 
         function ok(body) {
-            return of(new HttpResponse({ status: 200, body }));
+            return of(new HttpResponse({ status: 200, body }))
+                .pipe(delay(500)); // delay observable to simulate server api call
         }
 
         function unauthorized() {
-            return throwError({ status: 401, error: { message: 'unauthorized' } });
+            return throwError({ status: 401, error: { message: 'unauthorized' } })
+                .pipe(materialize(), delay(500), dematerialize()); // call materialize and dematerialize to ensure delay even if an error is thrown (https://github.com/Reactive-Extensions/RxJS/issues/648);
         }
 
         function error(message) {
-            return throwError({ status: 400, error: { message } });
+            return throwError({ status: 400, error: { message } })
+                .pipe(materialize(), delay(500), dematerialize());
         }
 
         function isLoggedIn() {

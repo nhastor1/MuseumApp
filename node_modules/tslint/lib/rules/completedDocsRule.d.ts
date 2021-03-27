@@ -19,6 +19,7 @@ import * as Lint from "../index";
 import { IInputExclusionDescriptors } from "./completed-docs/exclusionDescriptors";
 export declare const ALL = "all";
 export declare const ARGUMENT_CLASSES = "classes";
+export declare const ARGUMENT_CONSTRUCTORS = "constructors";
 export declare const ARGUMENT_ENUMS = "enums";
 export declare const ARGUMENT_ENUM_MEMBERS = "enum-members";
 export declare const ARGUMENT_FUNCTIONS = "functions";
@@ -43,7 +44,7 @@ export declare const TAGS_FOR_EXISTENCE = "existence";
 export declare const VISIBILITY_EXPORTED = "exported";
 export declare const VISIBILITY_INTERNAL = "internal";
 export declare type All = typeof ALL;
-export declare type DocType = All | typeof ARGUMENT_CLASSES | typeof ARGUMENT_ENUMS | typeof ARGUMENT_ENUM_MEMBERS | typeof ARGUMENT_FUNCTIONS | typeof ARGUMENT_INTERFACES | typeof ARGUMENT_METHODS | typeof ARGUMENT_NAMESPACES | typeof ARGUMENT_PROPERTIES | typeof ARGUMENT_TYPES | typeof ARGUMENT_VARIABLES;
+export declare type DocType = All | typeof ARGUMENT_CLASSES | typeof ARGUMENT_CONSTRUCTORS | typeof ARGUMENT_ENUMS | typeof ARGUMENT_ENUM_MEMBERS | typeof ARGUMENT_FUNCTIONS | typeof ARGUMENT_INTERFACES | typeof ARGUMENT_METHODS | typeof ARGUMENT_NAMESPACES | typeof ARGUMENT_PROPERTIES | typeof ARGUMENT_TYPES | typeof ARGUMENT_VARIABLES;
 export declare type Location = All | typeof LOCATION_INSTANCE | typeof LOCATION_STATIC;
 export declare type Privacy = All | typeof PRIVACY_PRIVATE | typeof PRIVACY_PROTECTED | typeof PRIVACY_PUBLIC;
 export declare type Visibility = All | typeof VISIBILITY_EXPORTED | typeof VISIBILITY_INTERNAL;
@@ -52,15 +53,15 @@ export declare class Rule extends Lint.Rules.AbstractRule {
     static defaultArguments: IInputExclusionDescriptors;
     static ARGUMENT_DESCRIPTOR_BLOCK: {
         properties: {
-            [DESCRIPTOR_TAGS]: {
+            tags: {
                 properties: {
-                    [TAGS_FOR_CONTENT]: {
+                    content: {
                         items: {
                             type: string;
                         };
                         type: string;
                     };
-                    [TAGS_FOR_EXISTENCE]: {
+                    existence: {
                         items: {
                             type: string;
                         };
@@ -68,7 +69,7 @@ export declare class Rule extends Lint.Rules.AbstractRule {
                     };
                 };
             };
-            [DESCRIPTOR_VISIBILITIES]: {
+            visibilities: {
                 enum: string[];
                 type: string;
             };
@@ -77,15 +78,15 @@ export declare class Rule extends Lint.Rules.AbstractRule {
     };
     static ARGUMENT_DESCRIPTOR_CLASS: {
         properties: {
-            [DESCRIPTOR_TAGS]: {
+            tags: {
                 properties: {
-                    [TAGS_FOR_CONTENT]: {
+                    content: {
                         items: {
                             type: string;
                         };
                         type: string;
                     };
-                    [TAGS_FOR_EXISTENCE]: {
+                    existence: {
                         items: {
                             type: string;
                         };
@@ -93,12 +94,40 @@ export declare class Rule extends Lint.Rules.AbstractRule {
                     };
                 };
             };
-            [DESCRIPTOR_LOCATIONS]: {
+            locations: {
                 enum: string[];
                 type: string;
             };
-            [DESCRIPTOR_PRIVACIES]: {
+            privacies: {
                 enum: string[];
+                type: string;
+            };
+        };
+        type: string;
+    };
+    static ARGUMENT_DESCRIPTOR_CONSTRUCTOR: {
+        properties: {
+            tags: {
+                properties: {
+                    content: {
+                        items: {
+                            type: string;
+                        };
+                        type: string;
+                    };
+                    existence: {
+                        items: {
+                            type: string;
+                        };
+                        type: string;
+                    };
+                };
+            };
+            privacies: {
+                enum: string[];
+                type: string;
+            };
+            overloads: {
                 type: string;
             };
         };
@@ -106,18 +135,18 @@ export declare class Rule extends Lint.Rules.AbstractRule {
     };
     static ARGUMENT_DESCRIPTOR_FUNCTION: {
         properties: {
-            [DESCRIPTOR_OVERLOADS]: {
+            overloads: {
                 type: string;
             };
-            [DESCRIPTOR_TAGS]: {
+            tags: {
                 properties: {
-                    [TAGS_FOR_CONTENT]: {
+                    content: {
                         items: {
                             type: string;
                         };
                         type: string;
                     };
-                    [TAGS_FOR_EXISTENCE]: {
+                    existence: {
                         items: {
                             type: string;
                         };
@@ -125,7 +154,7 @@ export declare class Rule extends Lint.Rules.AbstractRule {
                     };
                 };
             };
-            [DESCRIPTOR_VISIBILITIES]: {
+            visibilities: {
                 enum: string[];
                 type: string;
             };
@@ -134,18 +163,18 @@ export declare class Rule extends Lint.Rules.AbstractRule {
     };
     static ARGUMENT_DESCRIPTOR_METHOD: {
         properties: {
-            [DESCRIPTOR_OVERLOADS]: {
+            overloads: {
                 type: string;
             };
-            [DESCRIPTOR_TAGS]: {
+            tags: {
                 properties: {
-                    [TAGS_FOR_CONTENT]: {
+                    content: {
                         items: {
                             type: string;
                         };
                         type: string;
                     };
-                    [TAGS_FOR_EXISTENCE]: {
+                    existence: {
                         items: {
                             type: string;
                         };
@@ -153,11 +182,11 @@ export declare class Rule extends Lint.Rules.AbstractRule {
                     };
                 };
             };
-            [DESCRIPTOR_LOCATIONS]: {
+            locations: {
                 enum: string[];
                 type: string;
             };
-            [DESCRIPTOR_PRIVACIES]: {
+            privacies: {
                 enum: string[];
                 type: string;
             };

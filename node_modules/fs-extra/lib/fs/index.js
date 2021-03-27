@@ -1,4 +1,3 @@
-'use strict'
 // This is adapted from https://github.com/normalize/mz
 // Copyright (c) 2014-2016 Jonathan Ong me@jongleberry.com and Contributors
 const u = require('universalify').fromCallback
@@ -10,7 +9,6 @@ const api = [
   'chmod',
   'chown',
   'close',
-  'copyFile',
   'fchmod',
   'fchown',
   'fdatasync',
@@ -19,11 +17,9 @@ const api = [
   'ftruncate',
   'futimes',
   'lchown',
-  'lchmod',
   'link',
   'lstat',
   'mkdir',
-  'mkdtemp',
   'open',
   'readFile',
   'readdir',
@@ -37,21 +33,15 @@ const api = [
   'unlink',
   'utimes',
   'writeFile'
-].filter(key => {
-  // Some commands are not available on some systems. Ex:
-  // fs.copyFile was added in Node.js v8.5.0
-  // fs.mkdtemp was added in Node.js v5.10.0
-  // fs.lchown is not available on at least some Linux
-  return typeof fs[key] === 'function'
-})
+]
+// Add methods that are only in some Node.js versions
+// fs.copyFile was added in Node.js v8.5.0
+typeof fs.copyFile === 'function' && api.push('copyFile')
+// fs.mkdtemp() was added in Node.js v5.10.0
+typeof fs.mkdtemp === 'function' && api.push('mkdtemp')
 
 // Export all keys:
 Object.keys(fs).forEach(key => {
-  if (key === 'promises') {
-    // fs.promises is a getter property that triggers ExperimentalWarning
-    // Don't re-export it here, the getter is defined in "lib/index.js"
-    return
-  }
   exports[key] = fs[key]
 })
 
@@ -89,14 +79,24 @@ exports.read = function (fd, buffer, offset, length, position, callback) {
 // fs.write(fd, buffer[, offset[, length[, position]]], callback)
 // OR
 // fs.write(fd, string[, position[, encoding]], callback)
-// We need to handle both cases, so we use ...args
-exports.write = function (fd, buffer, ...args) {
-  if (typeof args[args.length - 1] === 'function') {
-    return fs.write(fd, buffer, ...args)
+// so we need to handle both cases
+exports.write = function (fd, buffer, a, b, c, callback) {
+  if (typeof arguments[arguments.length - 1] === 'function') {
+    return fs.write(fd, buffer, a, b, c, callback)
+  }
+
+  // Check for old, depricated fs.write(fd, string[, position[, encoding]], callback)
+  if (typeof buffer === 'string') {
+    return new Promise((resolve, reject) => {
+      fs.write(fd, buffer, a, b, (err, bytesWritten, buffer) => {
+        if (err) return reject(err)
+        resolve({ bytesWritten, buffer })
+      })
+    })
   }
 
   return new Promise((resolve, reject) => {
-    fs.write(fd, buffer, ...args, (err, bytesWritten, buffer) => {
+    fs.write(fd, buffer, a, b, c, (err, bytesWritten, buffer) => {
       if (err) return reject(err)
       resolve({ bytesWritten, buffer })
     })

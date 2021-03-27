@@ -10,7 +10,7 @@ describe('workspace-project App', () => {
 
   it('should display welcome message', () => {
     page.navigateTo();
-    expect(page.getTitleText()).toEqual('Welcome to angular-8-role-based-authorization-example!');
+    expect(page.getTitleText()).toEqual('angular-role-based-authorization-example app is running!');
   });
 
   afterEach(async () => {
