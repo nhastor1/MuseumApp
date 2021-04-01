@@ -1,6 +1,7 @@
-﻿<div class="col-md-6 offset-md-3 mt-5">
+﻿<!-- <div class="col-md-6 offset-md-3 mt-5">
     <div class="alert alert-info">
-        <strong>Normal User</strong> - U: user P: user<br />
+        <strong>Read User</strong> - U: read P: read<br />
+        <strong>Update User</strong> - U: update P: update<br />
         <strong>Administrator</strong> - U: admin P: admin
     </div>
     <div class="card">
@@ -29,4 +30,46 @@
             </form>
         </div>
     </div>
-</div>            
+</div>             -->
+
+  
+
+  <header id="header" class="fixed-top d-flex align-items-center header-transparent">
+    <div class="container d-flex justify-content-between align-items-center">
+
+      <div class="logo">
+        <h1 class="text-light"><a href="/"><span>Museum</span></a></h1>
+      </div>
+
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="hr d-flex align-items-center header-transparent"></div>
+          <form class="box" id="loginForm" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+              <h1>Login</h1>
+              <p class="text-muted"> Please enter your login and password!</p> 
+              <input type="text" name="username" formControlName="username" placeholder="Username"> 
+              <input type="password" name="password" formControlName="password" placeholder="Password"> 
+              <p *ngIf="textDanger" class="text-danger" id="txtDanger">{{ textDanger }}</p> 
+              <a class="forgot text-muted" href="#">Forgot password?</a>
+              <input type="submit" name="" value="Login" href="#">
+          </form>
+  </main>
+
+  
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <!-- <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <script src="assets/vendor/purecounter/purecounter.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="assets/vendor/waypoints/noframework.waypoints.js"></script> -->
+
+  <!-- Template Main JS File -->
+  <!-- <script src="assets/js/main.js"></script>
+  <script src="assets/js/login.js"></script> -->

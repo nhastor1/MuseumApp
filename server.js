@@ -9,6 +9,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const jwt = require('jsonwebtoken');
 const session = require('express-session');
+const cors = require('cors');
 
 const SECRETKEY = 'shhhhh';
 const TOKEN_TIME = 1 * 60 * 60 * 1000;
@@ -19,6 +20,7 @@ const PORT = 3000;
 
 // Init app
 const app = express();
+app.use(cors());
 
 // Create Redis Client
 let client = redis.createClient();
@@ -33,6 +35,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(session({secret: SECRETKEY}));
 
+//app.use(express.static(path.join(__dirname, 'public')));
 //app.use(express.static(__dirname + "/public"));
 //app.use(express.static(__dirname + "/views"));
 
@@ -60,7 +63,7 @@ const EDIT = 'edit';
 const USERNAME = 'username';
 const PASSWORD = 'password';
 const ROLE = 'role';
-const ROLES = ['admin', 'update', 'read'];
+const ROLES = ['Admin', 'Update', 'Read'];
 
 categories = [{category:'app', name:'Application', key:'appKey'}, {category:'web', name:'World-Wide-Web', key:'webKey'}
   , {category:'card', name:'Mastercard', key:'cardKey'}]
@@ -127,6 +130,10 @@ client.keys("*", function(err, res){
   if(res.length==0){
     // Initialize database
   }
+});
+
+app.get('/hello', function(req, res){
+  res.json({message: "Everything good..."});
 });
 
 app.get('/category', verifyRead, function(req,res){
@@ -468,9 +475,8 @@ app.post('/login', (req, res) => {
           jwt.sign({user}, SECRETKEY, { expiresIn: TOKEN_TIME + 'ms' }, (err, token) => {
             req.session.token = token;
             req.session.token.expires = TOKEN_TIME;
-            res.json({
-              token
-            });
+            user.token = token;
+            res.json(user);
           });
         }
         else{

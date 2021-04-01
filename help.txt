@@ -1,0 +1,9 @@
+,
+              "src/app/app.component.scss",
+              "src/app/admin/admin.component.scss",
+              "src/app/create/create.component.scss",
+              "src/app/details/details.component.scss",
+              "src/app/home/home.component.scss",
+              "src/app/login/login.component.scss",
+              "src/app/search/search.component.scss",
+              "src/app/update/update.component.scss"

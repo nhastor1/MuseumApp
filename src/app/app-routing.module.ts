@@ -6,12 +6,33 @@ import { AdminComponent } from './admin';
 import { LoginComponent } from './login';
 import { AuthGuard } from './_helpers';
 import { Role } from './_models';
+import { CreateComponent } from './create/create.component';
+import { DetailsComponent } from './details/details.component';
+import { SearchComponent } from './search/search.component';
 
 const routes: Routes = [
     {
         path: '',
         component: HomeComponent,
         canActivate: [AuthGuard]
+    },
+    {
+        path: 'create',
+        component: CreateComponent,
+        canActivate: [AuthGuard],
+        data: { roles: [Role.Update, Role.Admin] }
+    },
+    {
+        path: 'search',
+        component: SearchComponent,
+        canActivate: [AuthGuard],
+        data: { roles: [Role.Update, Role.Admin, Role.Read] }
+    },
+    {
+        path: 'details',
+        component: DetailsComponent,
+        canActivate: [AuthGuard],
+        data: { roles: [Role.Update, Role.Admin, Role.Read] }
     },
     {
         path: 'admin',

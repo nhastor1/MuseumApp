@@ -5,11 +5,15 @@ import { first } from 'rxjs/operators';
 
 import { AuthenticationService } from '@app/_services';
 
-@Component({ templateUrl: 'login.component.html' })
+@Component({ 
+    templateUrl: 'login.component.html',
+    styleUrls: ['login.component.scss']
+})
 export class LoginComponent implements OnInit {
     loginForm: FormGroup;
     loading = false;
     submitted = false;
+    textDanger = "";
     error = '';
 
     constructor(
@@ -46,14 +50,19 @@ export class LoginComponent implements OnInit {
         this.authenticationService.login(this.f.username.value, this.f.password.value)
             .pipe(first())
             .subscribe({
-                next: () => {
+                next: (user) => {
                     // get return url from query parameters or default to home page
+                    if(user.message){
+                        this.textDanger = user.message;
+                        return;
+                    }
                     const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
                     this.router.navigateByUrl(returnUrl);
                 },
                 error: error => {
-                    this.error = error;
-                    this.loading = false;
+                    this.textDanger = error;
+                    // this.error = error;
+                    // this.loading = false;
                 }
             });
     }

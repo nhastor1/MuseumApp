@@ -5,10 +5,10 @@ import { User } from '@app/_models';
 import { UserService } from '@app/_services';
 
 @Component({ 
-    templateUrl: 'admin.component.html',
-    styleUrls: ['admin.component.scss']
+    templateUrl: 'update.component.html',
+    styleUrls: ['update.component.scss']
 })
-export class AdminComponent implements OnInit {
+export class UpdateComponent implements OnInit {
     loading = false;
     users: User[] = [];
 

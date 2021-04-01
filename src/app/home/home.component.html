@@ -6,8 +6,9 @@
         <p>This page can be accessed by <u>all authenticated users</u>.</p>
         <p class="mb-1">Current user from secure api end point:</p>
         <div *ngIf="loading" class="spinner-border spinner-border-sm"></div>
-        <ul *ngIf="userFromApi">
-            <li>{{userFromApi.firstName}} {{userFromApi.lastName}}</li>
+        <ul *ngIf="user">
+            <!-- <li>{{userFromApi.firstName}} {{userFromApi.lastName}}</li> -->
+            <p>{{ user.username }}</p>
         </ul>
     </div>
 </div>

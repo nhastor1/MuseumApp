@@ -7,7 +7,8 @@ import { Role } from '@app/_models';
 
 const users = [
     { id: 1, username: 'admin', password: 'admin', firstName: 'Admin', lastName: 'User', role: Role.Admin },
-    { id: 2, username: 'user', password: 'user', firstName: 'Normal', lastName: 'User', role: Role.User }
+    { id: 2, username: 'read', password: 'read', firstName: 'Read', lastName: 'User', role: Role.Read },
+    { id: 3, username: 'update', password: 'update', firstName: 'Update', lastName: 'User', role: Role.Update }
 ];
 
 @Injectable()
