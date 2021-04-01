@@ -19,8 +19,6 @@ export class HomeComponent {
         private authenticationService: AuthenticationService
     ) {
         this.user = JSON.parse(localStorage.getItem('user'));
-        //this.user.role = Role.Update;
-        console.log(this.user);
     }
 
     ngOnInit() {

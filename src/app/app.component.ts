@@ -21,7 +21,6 @@ export class AppComponent {
     }
 
     get isUpdate() {
-        console.log(this.user.role);
         return this.user && this.user.role === Role.Update;
     }
 
