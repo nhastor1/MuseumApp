@@ -7,4 +7,5 @@ export class User {
     username: string;
     role: Role;
     token?: string;
+    renewableToken: string;
 }

@@ -9,6 +9,7 @@ import { Role } from './_models';
 import { CreateComponent } from './create/create.component';
 import { DetailsComponent } from './details/details.component';
 import { SearchComponent } from './search/search.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
 const routes: Routes = [
     {
@@ -43,6 +44,12 @@ const routes: Routes = [
     {
         path: 'login',
         component: LoginComponent
+    },
+    {
+        path: 'changePassword',
+        component: ChangePasswordComponent,
+        canActivate: [AuthGuard],
+        data: { roles: [Role.Update, Role.Admin, Role.Read] }
     },
 
     // otherwise redirect to home

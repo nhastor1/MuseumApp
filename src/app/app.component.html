@@ -24,7 +24,7 @@
           <li><a class="nav-item nav-link" routerLinkActive="active" routerLink="/details">Details</a></li>
           <li class="dropdown"><a href="#"><span>Account</span> <i class="bi bi-chevron-down"></i></a>
             <ul>
-              <li><a class="nav-item nav-link" routerLinkActive="active" routerLink="/">Change password</a></li>
+              <li><a class="nav-item nav-link" routerLinkActive="active" routerLink="/changePassword">Change password</a></li>
               <li *ngIf="isAdmin"><a class="nav-item nav-link" routerLinkActive="active" routerLink="/admin">Account management</a></li>
               <li><a class="nav-item nav-link" (click)="logout()">Logout</a></li>
             </ul>

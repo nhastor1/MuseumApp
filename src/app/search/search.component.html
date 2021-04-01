@@ -1,1 +1,33 @@
-<p>search works!</p>
+<main id="main">
+
+    <form action="" id="form_search" [formGroup]="myForm" (ngSubmit)="update()">
+      <section class="row justify-content-center">
+        <select name="category" id="category" class="form-select-lg col-md-3">
+          <option value='*'>Sve kategorije</option>
+        </select>
+        <input id="textSearch" type="text" class="form-select-lg col-md-4">
+        <input id="btnSearch" type="submit" class="form-select-lg col-md-2" value="Pretraga">
+      </section>
+    </form>
+
+    <section class="portfolio">
+      <div class="container">
+
+        <div class="row">
+          <div class="col-lg-12">
+            <ul id="portfolio-flters">
+              <li id= "li_*" data-filter="*" class="filter-active">Sve kategorije</li>
+            </ul>
+          </div>
+        </div>
+
+        <div id="itemsContainer" class="row portfolio-container" data-aos="fade-up" data-aos-easing="ease-in-out" data-aos-duration="500">
+
+          
+        </div>
+
+      </div>
+    </section>
+
+</main>
+

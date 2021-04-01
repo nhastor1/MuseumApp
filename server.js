@@ -490,6 +490,39 @@ app.post('/login', (req, res) => {
   });
 });
 
+
+app.put('/account/changePassword', verifyRead, function(req, res){
+  var oldPass = req.body.oldPass;
+  var newPass = req.body.newPass;
+
+  jwt.verify(req.token, SECRETKEY, (err, authData) => {
+    if(err) {
+      res.sendStatus(403);
+    } else {
+      var username = authData.user.username;
+      client.hgetall('user:' + username, function(err, results){
+        if(results){
+          bcrypt.compare(oldPass, results.password, function(err, result) {
+            if(result){
+              bcrypt.hash(newPass, saltRounds, function(err, hash) {
+                client.hset('user:' + username, PASSWORD, hash, function(err, results) {
+                  destroySession(req, res);
+                });
+              });
+            }
+            else{
+              res.json({message: "Incorrect password"});
+            }
+          });
+        }
+        else{
+          res.sendStatus(403);
+        }
+      });
+    }
+  });
+});
+
 app.get('/logout',(req,res) => {
   req.session.destroy((err) => {
       if(err) {

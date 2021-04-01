@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
-  selector: 'app-create',
-  templateUrl: './create.component.html',
-  styleUrls: ['./create.component.scss']
+  selector: 'app-change-password',
+  templateUrl: './change-password.component.html',
+  styleUrls: ['./change-password.component.scss']
 })
-export class CreateComponent implements OnInit {
+export class ChangePasswordComponent implements OnInit {
   myForm:any = new FormGroup({
     firstName: new FormControl(''),
     lastName: new FormControl(''),
@@ -20,5 +20,4 @@ export class CreateComponent implements OnInit {
   update(){
 
   }
-
 }

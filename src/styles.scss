@@ -3,7 +3,7 @@ a { cursor: pointer }
 
 body {
     font-family: "Open Sans", sans-serif;
-    color: #444;
+    //color: #444;
   }
   
   a {
@@ -325,27 +325,27 @@ body {
     position: relative;
   }
   
-  .section-title h2::before {
-    content: '';
-    position: absolute;
-    display: block;
-    width: 120px;
-    height: 1px;
-    background: #ddd;
-    bottom: 1px;
-    left: calc(50% - 60px);
-  }
+  // .section-title h2::before {
+  //   content: '';
+  //   position: absolute;
+  //   display: block;
+  //   width: 120px;
+  //   height: 1px;
+  //   background: #ddd;
+  //   bottom: 1px;
+  //   left: calc(50% - 60px);
+  // }
   
-  .section-title h2::after {
-    content: '';
-    position: absolute;
-    display: block;
-    width: 40px;
-    height: 3px;
-    background: #68A4C4;
-    bottom: 0;
-    left: calc(50% - 20px);
-  }
+  // .section-title h2::after {
+  //   content: '';
+  //   position: absolute;
+  //   display: block;
+  //   width: 40px;
+  //   height: 3px;
+  //   background: #68A4C4;
+  //   bottom: 0;
+  //   left: calc(50% - 20px);
+  // }
   
   .section-title p {
     margin-bottom: 0;
@@ -356,7 +356,7 @@ body {
   --------------------------------------------------------------*/
   .breadcrumbs {
     padding: 15px 0;
-    background-color: #f3f8fa;
+    //background-color: #f3f8fa;
     min-height: 40px;
   }
   
@@ -2129,48 +2129,6 @@ body {
     }
   }
   
-  /*--------------------------------------------------------------
-  # Breadcrumbs
-  --------------------------------------------------------------*/
-  .breadcrumbs {
-    padding: 15px 0;
-    background: #f3f5fa;
-    min-height: 40px;
-    margin-top: 72px;
-  }
-  
-  @media (max-width: 992px) {
-    .breadcrumbs {
-      margin-top: 68px;
-    }
-  }
-  
-  .breadcrumbs h2 {
-    font-size: 28px;
-    font-weight: 600;
-    color: #37517e;
-  }
-  
-  .breadcrumbs ol {
-    display: flex;
-    flex-wrap: wrap;
-    list-style: none;
-    padding: 0 0 10px 0;
-    margin: 0;
-    font-size: 14px;
-  }
-  
-  .breadcrumbs ol li + li {
-    padding-left: 10px;
-  }
-  
-  .breadcrumbs ol li + li::before {
-    display: inline-block;
-    padding-right: 10px;
-    color: #4668a2;
-    content: "/";
-  }
-  
   /* The snackbar - position it at the bottom and in the middle of the screen */
   #snackbar {
     visibility: hidden; /* Hidden by default. Visible on click */
@@ -2226,4 +2184,8 @@ body {
     padding: 0;
     font-family: sans-serif;
     background: linear-gradient(to right, #03b5fc, #68A4C4);
+}
+
+.roundCorners{
+  border-radius: 50px;
 }

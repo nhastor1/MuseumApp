@@ -17,6 +17,7 @@ import { UpdateComponent } from './update';;
 import { CreateComponent } from './create/create.component';
 import { SearchComponent } from './search/search.component';
 import { DetailsComponent } from './details/details.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
 @NgModule({
     imports: [
@@ -33,7 +34,8 @@ import { DetailsComponent } from './details/details.component';
         CreateComponent,
         UpdateComponent,
         DetailsComponent,
-        SearchComponent],
+        SearchComponent,
+        ChangePasswordComponent],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
