@@ -16,9 +16,9 @@ export class AdminComponent implements OnInit {
 
     ngOnInit() {
         this.loading = true;
-        this.userService.getAll().pipe(first()).subscribe(users => {
-            this.loading = false;
-            this.users = users;
-        });
+        // this.userService.getAll().pipe(first()).subscribe(users => {
+        //     this.loading = false;
+        //     this.users = users;
+        // });
     }
 }

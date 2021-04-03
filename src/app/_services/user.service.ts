@@ -8,6 +8,13 @@ import { User } from '@app/_models';
 export class UserService {
     constructor(private http: HttpClient) { }
 
+    changePassword(oldPass:string, newPass:string){
+        return this.http.put<any>(`${environment.apiUrl}/account/changePassword`, {
+            oldPass: oldPass,
+            newPass: newPass
+        });
+    }
+
     getAll() {
         return this.http.get<User[]>(`${environment.apiUrl}/users`);
     }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UserService } from '@app/_services';
 
 @Component({
   selector: 'app-change-password',
@@ -8,16 +9,34 @@ import { FormGroup, FormControl } from '@angular/forms';
 })
 export class ChangePasswordComponent implements OnInit {
   myForm:any = new FormGroup({
-    firstName: new FormControl(''),
-    lastName: new FormControl(''),
+    oldPass: new FormControl('', Validators.required),
+    newPass: new FormControl('', Validators.required),
+    repPass: new FormControl('', Validators.required)
   });
+  loading = false;
 
-  constructor() { }
+  constructor(private userService:UserService) { }
 
   ngOnInit(): void {
   }
 
-  update(){
+  update(formValues){
+    if(this.validForm){
+      this.loading = true;
+      this.userService.changePassword(formValues.oldPass, formValues.newPass).subscribe((obj) => {
+        this.loading = false;
+        if(obj){
+          alert(obj.message);
+        }
+      })
+    }
+  }
 
+  samePassword(){
+    return this.myForm.get('newPass').value === this.myForm.get('repPass').value;
+  }
+
+  validForm(){
+    return this.myForm.valid && this.samePassword();
   }
 }

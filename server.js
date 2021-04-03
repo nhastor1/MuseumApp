@@ -10,6 +10,7 @@ const saltRounds = 10;
 const jwt = require('jsonwebtoken');
 const session = require('express-session');
 const cors = require('cors');
+const { UrlSegment } = require('@angular/router');
 
 const SECRETKEY = 'shhhhh';
 const TOKEN_TIME = 1 * 60 * 60 * 1000;
@@ -65,65 +66,68 @@ const PASSWORD = 'password';
 const ROLE = 'role';
 const ROLES = ['Admin', 'Update', 'Read'];
 
-categories = [{category:'app', name:'Application', key:'appKey'}, {category:'web', name:'World-Wide-Web', key:'webKey'}
-  , {category:'card', name:'Mastercard', key:'cardKey'}]
+categories = [{category:'middleAges', name:'Middle ages', key:'middleAgesKey'}, {category:'prehistory', name:'Prehistory', key:'prehistoryKey'}
+  , {category:'materialCulture', name:'Material Culture', key:'materialCultureKey'}]
 const CATEGORY = 'category';
 const SEARCH = 'search';
 const NAZIV = 'Naziv';
 keys = [];
 
-var enterCategories = [];
-for(var i=0; i<categories.length; i++){
-  enterCategories.push('name' + i, categories[i].name,
-    'key' + i, categories[i].key);
-  if(i==2)
-  client.hmset(categories[i].key, [
-    NAZIV, STRING,
-    'Starost', INTEGER,
-    'Datum porijekla', DATE,
-    'Slika', IMAGE,
-    'Video', VIDEO
-  ]);
-  else if (i==0)
-  client.hmset(categories[i].key, [
-    NAZIV, STRING,
-    'Video', VIDEO
-  ]);
-  else
-  client.hmset(categories[i].key, [
-    NAZIV, STRING,
-    'Starost', INTEGER,
-    'Datum i vrijeme porijekla', DATE_TIME,
-    'Pjesma', AUDIO
-  ]);
+//renewDatabase();
+
+function renewDatabase(){
+  var enterCategories = [];
+  for(var i=0; i<categories.length; i++){
+    enterCategories.push('name' + i, categories[i].name,
+      'key' + i, categories[i].key);
+    if(i==2)
+    client.hmset(categories[i].key, [
+      NAZIV, STRING,
+      'Starost', INTEGER,
+      'Datum porijekla', DATE,
+      'Slika', IMAGE,
+      'Video', VIDEO
+    ]);
+    else if (i==0)
+    client.hmset(categories[i].key, [
+      NAZIV, STRING,
+      'Video', VIDEO
+    ]);
+    else
+    client.hmset(categories[i].key, [
+      NAZIV, STRING,
+      'Starost', INTEGER,
+      'Datum i vrijeme porijekla', DATE_TIME,
+      'Pjesma', AUDIO
+    ]);
+  }
+  client.hmset(CATEGORY, enterCategories);
+
+  // users
+  bcrypt.hash('admin', saltRounds, function(err, hash) {
+    client.hmset('user:admin', [
+      USERNAME, 'admin',
+      ROLE, ROLES[0],
+      PASSWORD, hash
+    ]);
+  });
+
+  bcrypt.hash('read', saltRounds, function(err, hash) {
+    client.hmset('user:read', [
+      USERNAME, 'read',
+      ROLE, ROLES[2],
+      PASSWORD, hash
+    ]);
+  });
+
+  bcrypt.hash('update', saltRounds, function(err, hash) {
+    client.hmset('user:update', [
+      USERNAME, 'update',
+      ROLE, ROLES[1],
+      PASSWORD, hash
+    ]);
+  });
 }
-client.hmset(CATEGORY, enterCategories);
-
-// users
-bcrypt.hash('admin', saltRounds, function(err, hash) {
-  client.hmset('user:admin', [
-    USERNAME, 'admin',
-    ROLE, ROLES[0],
-    PASSWORD, hash
-  ]);
-});
-
-bcrypt.hash('read', saltRounds, function(err, hash) {
-  client.hmset('user:read', [
-    USERNAME, 'read',
-    ROLE, ROLES[2],
-    PASSWORD, hash
-  ]);
-});
-
-bcrypt.hash('update', saltRounds, function(err, hash) {
-  client.hmset('user:update', [
-    USERNAME, 'update',
-    ROLE, ROLES[1],
-    PASSWORD, hash
-  ]);
-});
-
 
 client.keys("*", function(err, res){
   keys = res;
@@ -472,24 +476,51 @@ app.post('/login', (req, res) => {
       user.role = results.role;
       bcrypt.compare(req.body.password, results.password, function(err, result) {
         if(result){
-          jwt.sign({user}, SECRETKEY, { expiresIn: TOKEN_TIME + 'ms' }, (err, token) => {
-            req.session.token = token;
-            req.session.token.expires = TOKEN_TIME;
-            user.token = token;
-            res.json(user);
+          jwt.sign({user}, SECRETKEY, { expiresIn: TOKEN_TIME + 'ms' }, (err, shortToken) => {
+            jwt.sign({user}, SECRETKEY, { expiresIn: (2*TOKEN_TIME) + 'ms' }, (err, longToken) => {
+              req.session.token = longToken;
+              req.session.token.expires = 2*TOKEN_TIME;
+              user.token = shortToken;
+              user.renewableToken = longToken;
+              res.json(user);
+            });
           });
+          // jwt.sign({user}, SECRETKEY, { expiresIn: TOKEN_TIME + 'ms' }, (err, token) => {
+          //   req.session.token = token;
+          //   req.session.token.expires = TOKEN_TIME;
+          //   user.token = token;
+          //   res.json(user);
+          // });
         }
         else{
           res.json({message: "Incorrect password"});
         }
       });
     }
-    else{
+    else{ 
       res.json({message: "No such username"});
     }
   });
 });
 
+app.post('/newToken', verifyRead, (req, res) =>{
+  jwt.verify(req.token, SECRETKEY, (err, authData) => {
+    if(err) {
+      res.sendStatus(401);
+    } else {
+      jwt.sign(authData.user, SECRETKEY, { expiresIn: TOKEN_TIME + 'ms' }, (err, shortToken) => {
+        jwt.sign(authData.user, SECRETKEY, { expiresIn: (2*TOKEN_TIME) + 'ms' }, (err, longToken) => {
+          req.session.token = longToken;
+          req.session.token.expires = 2*TOKEN_TIME;
+          res.json({
+            token: shortToken,
+            renewableToken: longToken
+          });
+        });
+      });
+    }
+  });
+});
 
 app.put('/account/changePassword', verifyRead, function(req, res){
   var oldPass = req.body.oldPass;
@@ -524,13 +555,7 @@ app.put('/account/changePassword', verifyRead, function(req, res){
 });
 
 app.get('/logout',(req,res) => {
-  req.session.destroy((err) => {
-      if(err) {
-          return console.log(err);
-      }
-      res.redirect('/');
-  });
-
+  destroySession(req, res);
 });
 
 app.get('/team.html/:objectId', function(req,res){
@@ -602,6 +627,15 @@ function getToken(req, res){
     res.sendStatus(403);
     return false;
   }
+}
+
+function destroySession(req, res){
+  req.session.destroy((err) => {
+    if(err) {
+        return console.log(err);
+    }
+    res.sendStatus(301);
+  });
 }
 
 // generate random key
