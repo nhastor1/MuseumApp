@@ -1,6 +1,6 @@
 ﻿import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -42,5 +42,20 @@ export class AuthenticationService {
         this.userSubject.next(null);
         this.user == null;
         this.router.navigate(['/login']);
+    }
+    
+    refreshToken(){
+        console.log("REFRESHTOKEN");
+        return this.http.post<any>(`${environment.apiUrl}/newToken`, {refreshToken: this.userValue.renewableToken})
+            .pipe(map(user => {
+                // store user details and jwt token in local storage to keep user logged in between page refreshes
+                console.log("IMA NESTA");
+                if(!user.message){
+                    localStorage.setItem('user', JSON.stringify(user));
+                    this.userSubject.next(user);
+                }
+                console.log(user);
+                return user.token;
+            }));
     }
 }

@@ -13,8 +13,8 @@ const cors = require('cors');
 const { UrlSegment } = require('@angular/router');
 
 const SECRETKEY = 'shhhhh';
-const TOKEN_TIME = 1 * 60 * 60 * 1000;
-//const TOKEN_TIME = 1 * 30 * 1000;
+//const TOKEN_TIME = 1 * 60 * 60 * 1000;
+const TOKEN_TIME = 1 * 30 * 1000;
 
 // Port
 const PORT = 3000;
@@ -35,19 +35,6 @@ client.on('connect', function(){
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(session({secret: SECRETKEY}));
-
-//app.use(express.static(path.join(__dirname, 'public')));
-//app.use(express.static(__dirname + "/public"));
-//app.use(express.static(__dirname + "/views"));
-
-function auth(req, res, next){
-  if(typeof req.headers['authorization'] !== 'undefined'){
-    console.log(req.headers['authorization']);
-    next();
-  }
-  else
-    res.sendStatus(403);
-}
 
 // Initialize database
 // Keywords
@@ -477,20 +464,14 @@ app.post('/login', (req, res) => {
       bcrypt.compare(req.body.password, results.password, function(err, result) {
         if(result){
           jwt.sign({user}, SECRETKEY, { expiresIn: TOKEN_TIME + 'ms' }, (err, shortToken) => {
-            jwt.sign({user}, SECRETKEY, { expiresIn: (2*TOKEN_TIME) + 'ms' }, (err, longToken) => {
-              req.session.token = longToken;
-              req.session.token.expires = 2*TOKEN_TIME;
+            jwt.sign({user}, SECRETKEY, { expiresIn: (20*TOKEN_TIME) + 'ms' }, (err, longToken) => {
+              // req.session.token = longToken;
+              // req.session.token.expires = 2*TOKEN_TIME;
               user.token = shortToken;
               user.renewableToken = longToken;
               res.json(user);
             });
           });
-          // jwt.sign({user}, SECRETKEY, { expiresIn: TOKEN_TIME + 'ms' }, (err, token) => {
-          //   req.session.token = token;
-          //   req.session.token.expires = TOKEN_TIME;
-          //   user.token = token;
-          //   res.json(user);
-          // });
         }
         else{
           res.json({message: "Incorrect password"});
@@ -503,26 +484,33 @@ app.post('/login', (req, res) => {
   });
 });
 
-app.post('/newToken', verifyRead, (req, res) =>{
-  jwt.verify(req.token, SECRETKEY, (err, authData) => {
+app.post('/newToken', (req, res) =>{
+  console.log("New token");
+  jwt.verify(req.body.refreshToken, SECRETKEY, (err, authData) => {
     if(err) {
-      res.sendStatus(401);
+      res.sendStatus(403);
     } else {
-      jwt.sign(authData.user, SECRETKEY, { expiresIn: TOKEN_TIME + 'ms' }, (err, shortToken) => {
-        jwt.sign(authData.user, SECRETKEY, { expiresIn: (2*TOKEN_TIME) + 'ms' }, (err, longToken) => {
-          req.session.token = longToken;
-          req.session.token.expires = 2*TOKEN_TIME;
-          res.json({
-            token: shortToken,
-            renewableToken: longToken
-          });
+      var user = authData.user;
+      console.log(user);
+      jwt.sign({user}, SECRETKEY, { expiresIn: TOKEN_TIME + 'ms' }, (err, shortToken) => {
+        jwt.sign({user}, SECRETKEY, { expiresIn: (20*TOKEN_TIME) + 'ms' }, (err, longToken) => {
+          // req.session.token = longToken;
+          // req.session.token.expires = 2*TOKEN_TIME;
+          console.log(shortToken);
+          user.token = shortToken;
+          user.renewableToken = longToken;
+          res.json(user);
         });
       });
     }
   });
 });
 
+var i = 0;
+var j = 0;
+
 app.put('/account/changePassword', verifyRead, function(req, res){
+  console.log("change pass: " + i++);
   var oldPass = req.body.oldPass;
   var newPass = req.body.newPass;
 
@@ -571,10 +559,16 @@ app.get('/updateAllow', verifyUpdate, (req, res) => {
 
 // Verify Token
 function verifyToken(req, res, next, role) {
+  console.log("verify pass: " + j++);
   if(getToken(req, res)){
     jwt.verify(req.token, SECRETKEY, (err, authData) => {
       if(err) {
-        res.sendStatus(403);
+        if(err.expiredAt < Date.now()){
+          res.sendStatus(401);
+        }
+        else{
+          res.sendStatus(403);
+        }          
       } else {
         if(ROLES.indexOf(authData.user.role) <= ROLES.indexOf(role)){
           next();
@@ -596,21 +590,6 @@ function verifyUpdate(req, res, next){
 }
 
 function verifyRead(req, res, next){
-  verifyToken(req, res, next, ROLES[2]);
-}
-
-function verifyAdminSession(req, res, next){
-  req.headers['authorization'] = "Bearer " + req.session.token;
-  verifyToken(req, res, next, ROLES[0]);
-}
-
-function verifyUpdateSession(req, res, next){
-  req.headers['authorization'] = "Bearer " + req.session.token;
-  verifyToken(req, res, next, ROLES[1]);
-}
-
-function verifyReadSession(req, res, next){
-  req.headers['authorization'] = "Bearer " + req.session.token;
   verifyToken(req, res, next, ROLES[2]);
 }
 
