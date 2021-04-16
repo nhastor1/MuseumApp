@@ -1,0 +1,5 @@
+<div>
+    <img *ngIf="image && file" [src]="file" alt="No image">
+    <video *ngIf="video && file" [src]="file" controls></video>
+    <audio *ngIf="audio && file" [src]="file" controls></audio>
+</div>

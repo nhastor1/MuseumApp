@@ -18,7 +18,8 @@ import { CreateComponent } from './create/create.component';
 import { SearchComponent } from './search/search.component';
 import { DetailsComponent } from './details/details.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
-
+import { InputComponent } from './input/input.component';
+import { MediaComponent } from './media/media.component';
 @NgModule({
     imports: [
         BrowserModule,
@@ -35,7 +36,9 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
         UpdateComponent,
         DetailsComponent,
         SearchComponent,
-        ChangePasswordComponent],
+        ChangePasswordComponent,
+        InputComponent,
+        MediaComponent],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
 

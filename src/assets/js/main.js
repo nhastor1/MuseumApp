@@ -199,5 +199,3 @@
   });
 
 })()
-
-console.log("SVASTA NESTA");

@@ -29,6 +29,7 @@ export class AuthenticationService {
             .pipe(map(user => {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 if(!user.message){
+                    console.log(user);
                     localStorage.setItem('user', JSON.stringify(user));
                     this.userSubject.next(user);
                 }
@@ -49,13 +50,24 @@ export class AuthenticationService {
         return this.http.post<any>(`${environment.apiUrl}/newToken`, {refreshToken: this.userValue.renewableToken})
             .pipe(map(user => {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
-                console.log("IMA NESTA");
                 if(!user.message){
                     localStorage.setItem('user', JSON.stringify(user));
                     this.userSubject.next(user);
                 }
-                console.log(user);
                 return user.token;
             }));
+    }
+
+    public isUpdateOrAdmin() {
+        return this.userValue && ( this.userValue.role === Role.Update
+            || this.userValue.role === Role.Admin);
+    }
+
+    public isAdmin() {
+        return this.userValue && this.userValue.role === Role.Admin;
+    }
+
+    public isUpdate() {
+        return this.userValue && this.userValue.role === Role.Update;
     }
 }

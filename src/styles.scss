@@ -895,8 +895,8 @@ body {
   }
   
   .portfolio #portfolio-flters li:hover, .portfolio #portfolio-flters li.filter-active {
-    border-color: #68A4C4;
-    color: #68A4C4;
+    // border-color: #68A4C4;
+    // color: #68A4C4;
   }
   
   .portfolio .portfolio-item {
@@ -2188,4 +2188,8 @@ body {
 
 .roundCorners{
   border-radius: 50px;
+}
+
+input[type="submit"] {
+  border-color: white;
 }

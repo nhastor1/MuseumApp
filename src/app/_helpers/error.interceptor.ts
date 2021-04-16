@@ -13,34 +13,18 @@ export class ErrorInterceptor implements HttpInterceptor {
         const user = this.authenticationService.userValue;
         const isLoggedIn = user && user.token;
         const isApiUrl = request.url.startsWith(environment.apiUrl);
-        if (isLoggedIn && isApiUrl) {
+        if (isLoggedIn && isApiUrl && !this.isRefreshing) {
             request = this.addToken(request, this.authenticationService.userValue.token);
+            //console.log(this.authenticationService.userValue.token);
         }
 
-        return next.handle(request).pipe(catchError(err => {
-            if ([403].indexOf(err.status) !== -1) {
-                // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
-                this.authenticationService.logout();
-            }
-            else if(err.status === 401){
-                this.handle401Error(request, next);
-            }
-            else if(err.status === 301){
-                this.authenticationService.logout();
-            }
-            else{
-                console.log("GRESKAAA");
-                const error = err.error.message || err.statusText;
-                return throwError(error);
-            }
-        }))
+        return this.handleRequest(request, next);
     }
 
     private isRefreshing = false;
     private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
     private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
-        console.log("HANDLA SEE");
         if (!this.isRefreshing) {
             this.isRefreshing = true;
             this.refreshTokenSubject.next(null);
@@ -48,31 +32,47 @@ export class ErrorInterceptor implements HttpInterceptor {
             return this.authenticationService.refreshToken()
                 .pipe(
                     switchMap((token: any) => {
-                        console.log("Prvi slucaj");
-                        console.log(token);
                         this.isRefreshing = false;
                         this.refreshTokenSubject.next(token);
-                        return next.handle(this.addToken(request, token));
-                })).subscribe();
+                        return this.handleRequest(this.addToken(request, token), next);
+                }))
 
         } else {
             return this.refreshTokenSubject.pipe(
             filter(token => token != null),
             take(1),
             switchMap(jwt => {
-                console.log("Drugi slucaj");
-                console.log(jwt);
-                return next.handle(this.addToken(request, jwt));
+                return this.handleRequest(this.addToken(request, jwt), next);
             }));
         }
     }
 
     private addToken(request: HttpRequest<any>, token: string) {
-        console.log("PONOVO");
         return request.clone({
             setHeaders: {
                 Authorization: `Bearer ${token}`
             }
         });
+    }
+
+    private handleRequest(request, next){
+        return next.handle(request).pipe(catchError(err => {
+            if ([403].indexOf(err.status) !== -1) {
+                // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
+                this.authenticationService.logout();
+            }
+            else if(err.status === 401){
+                return this.handle401Error(request, next);
+            }
+            else if(err.status === 301){
+                this.authenticationService.logout();
+            }
+            else{
+                console.log(err);
+                //return err;
+                const error = err.error.message || err.statusText;
+                return throwError(error);
+            }
+        }));
     }
 }

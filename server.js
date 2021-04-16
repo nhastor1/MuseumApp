@@ -10,11 +10,12 @@ const saltRounds = 10;
 const jwt = require('jsonwebtoken');
 const session = require('express-session');
 const cors = require('cors');
-const { UrlSegment } = require('@angular/router');
+// const { UrlSegment } = require('@angular/router');
+// const { json } = require('body-parser');
 
 const SECRETKEY = 'shhhhh';
-//const TOKEN_TIME = 1 * 60 * 60 * 1000;
-const TOKEN_TIME = 1 * 30 * 1000;
+const TOKEN_TIME = 1 * 60 * 60 * 1000;
+//const TOKEN_TIME = 1 * 30 * 1000;
 
 // Port
 const PORT = 3000;
@@ -52,15 +53,34 @@ const USERNAME = 'username';
 const PASSWORD = 'password';
 const ROLE = 'role';
 const ROLES = ['Admin', 'Update', 'Read'];
+const FILES = [VIDEO, IMAGE, AUDIO];
 
 categories = [{category:'middleAges', name:'Middle ages', key:'middleAgesKey'}, {category:'prehistory', name:'Prehistory', key:'prehistoryKey'}
-  , {category:'materialCulture', name:'Material Culture', key:'materialCultureKey'}]
+  , {category:'materialCulture', name:'Material Culture', key:'materialCultureKey'}];
+allCategories = {};
 const CATEGORY = 'category';
 const SEARCH = 'search';
 const NAZIV = 'Naziv';
 keys = [];
 
-//renewDatabase();
+setTimeout(renewDatabase, 300);
+setTimeout(getCategories, 1000);
+
+function getCategories(){
+  for(var cat of categories){
+    (function(key){
+      client.hgetall(cat.key, function(err, results){
+        var number = 0;
+        for(var el of Object.values(results)){
+          if(FILES.includes(el))
+            number++;
+        }
+        results.numberOfFiles = number;
+        allCategories[key] = results;
+      });
+    })(cat.key);
+  }
+}
 
 function renewDatabase(){
   var enterCategories = [];
@@ -134,7 +154,19 @@ app.get('/category', verifyRead, function(req,res){
             error: CATEGORY + ' does not exist'
           });
         } else {
-          res.json(results);
+          var even = true;
+          var obj = {};
+          var array = [];
+          for(var key of Object.keys(results)){
+            even = !even;
+            if(!even)
+              obj.name = results[key];
+            else{
+              obj.key = results[key];
+              array.push(JSON.parse(JSON.stringify(obj)));
+            }
+          }
+          res.json(array);
         }
     });
  });
@@ -146,129 +178,160 @@ app.get('/category', verifyRead, function(req,res){
           error: req.params.key + ' does not exist'
         });
       } else {
-        res.json(results);
+        array = [];
+        for(var key of Object.keys(results)){
+          array.push({name: key, type: results[key]});
+        }
+        res.json(array);
       }
   });
 });
 
 app.post('/category/:key', verifyUpdate, function(req, res, next){
-  client.hgetall(req.params.key, function(err, results){
-    if(!results){
-      res.json({
-        error: req.params.key + ' does not exist'
-      });
-    } else {
-      objKey = genRandKeyCat(req.params.key);
-      parameters = [];
-      newKeys = [];
-      var i=0;
-      for(var el of Object.keys(results)){
-        parameters.push(results[el] + "_" + i++);
-        newKey = genRandKey();
-        newKeys.push(newKey)
-        parameters.push(newKey);
+  // client.hgetall(req.params.key, function(err, results){
+  //   if(!results){
+  //     res.json({
+  //       error: req.params.key + ' does not exist'
+  //     });
+  //   } else {
+      // set keys for files
+      let category = allCategories[req.params.key];
+      for(let key of Object.keys(category)){
+        if(FILES.includes(category[key])){
+          req.body[key] = genRandKey();
+        }
       }
-      // Edit time
-      parameters.push(EDIT);
-      newKey = genRandKey();
-      newKeys.push(newKey)
-      parameters.push(newKey);
-      // Create time
-      parameters.push(CREATE);
-      newKey = genRandKey();
-      newKeys.push(newKey)
-      parameters.push(newKey);
+      // convert JSON to array
+      var obj2dArray = Object.entries(req.body);
+      objArray = [].concat.apply([], obj2dArray);
+      var date = Date.now();
+      objArray = objArray.concat([CREATE, date, EDIT, date]);
+      objKey = genRandKeyCat(req.params.key);
 
-      client.hmset(objKey, parameters, function(err, result){
+      client.hmset(objKey, objArray, function(err, result){
         if(err){
-          // Delete all keys
-          keys = keys.filter(function(value, index, arr){ 
-            return !newKeys.includes(value);
+          client.del(objKey, function(value){
+            res.json({error: "Error"});
           });
-          client.del(objKey);
         }
         else{
-          var resKeys = [];
-          var i=0;
-          for(var el of Object.keys(results)){
-            resKeys.push({key: newKeys[i], type: results[el] + "_" + i});
-            i++;
-          }
-          resKeys.push({key: newKeys[i++], type: EDIT});
-          resKeys.push({key: newKeys[i++], type: CREATE});
-          res.json({objKey: objKey, keys: resKeys});
+          res.json({objKey: objKey, data: req.body});
         }
       });
-    }
-  });
+    // }
+  // });
 });
 
-app.post('/data/:textId', verifyUpdate, function(req, res, next){
-  client.set(req.params.textId, req.body.data, function(err, value){
-    if (err) { 
-      next(err); 
-    } 
-    else {
-      if (!value) {
-        next();
-      } else {
-        res.json({message: 'Data added', value: value});
+function addData(key, data){
+  return new Promise((resolve, reject) => {
+    client.set(key, data, function(err, value){
+      if (err) { 
+        reject(err);
+      } 
+      else {
+        if (!value) {
+          reject();
+        } else {
+          resolve(value);
+        }
       }
-    }
+    });
   });
-});
+}
 
-app.get('/data/:textId', verifyRead, function(req, res, next){
-  client.get(req.params.textId, function(err, value){
-    if (err) { 
-      next(err); 
-    } 
-    else {
-      if (!value) {
-        next();
-      } else {
-        res.json({value: value});
+function getData(key){
+  return new Promise((resolve, reject) => {
+    client.get(key, function(err, value){
+      if (err) { 
+        reject(err); 
+      } 
+      else {
+        if (!value) {
+          reject();
+        } else {
+          resolve(value);
+        }
       }
-    }
+    });
   });
-});
+}
+
+// function saveFile(req, key) {
+//   return new Promise((resolve, reject) => {
+//     var busboy  = new Busboy({ headers: req.headers }), fileData;
+
+//     busboy.on(key, function(fieldname, file) {
+//       //the data event of the stream
+//       file.on('data', function(data) {
+//         //setup the  fileData var if empty
+//         if (!fileData) { 
+//           fileData = data; 
+//         } 
+//         else {
+//           //concat it to the first fileData
+//           fileData = Buffer.concat([fileData, data]);
+//         }
+//       });
+//       //when the stream is done
+//       file.on('end', function(){
+//         //var key = genRandKey();
+//         //set using redis
+//         clientBuff.set(
+//           key,
+//           fileData,
+//           function(err, resp) {
+//             if (err) { 
+//               reject(err); 
+//             } 
+//             else {
+//               resolve(); //complete the http
+//             }
+//           }
+//         );
+//       });
+//     });
+//     //let busboy handle the req stream
+//     req.pipe(busboy);
+//   });
+// }
+
 
 app.post('/file/:fileId', verifyUpdate, function(req,res,next) {
-    var busboy  = new Busboy({ headers: req.headers }), fileData;
+  var busboy  = new Busboy({ headers: req.headers }), fileData;
 
-    busboy.on('file', function(fieldname, file) {
-      //the data event of the stream
-      file.on('data', function(data) {
-        //setup the  fileData var if empty
-        if (!fileData) { 
-          fileData = data; 
-        } 
-        else {
-          //concat it to the first fileData
-          fileData = Buffer.concat([fileData, data]);
-        }
-      });
-      //when the stream is done
-      file.on('end', function(){
-        //var key = genRandKey();
-        //set using redis
-        clientBuff.set(
-          req.params.fileId,
-          fileData,
-          function(err, resp) {
-            if (err) { 
-              next(err); 
-            } 
-            else {
-              res.json({message: "File saved", key: req.params.fileId}); //complete the http
-            }
-          }
-        );
-      });
+  busboy.on('file', function(fieldname, file) {
+    //the data event of the stream
+    file.on('data', function(data) {
+      //setup the  fileData var if empty
+      if (!fileData) { 
+        fileData = data; 
+      } 
+      else {
+        //concat it to the first fileData
+        fileData = Buffer.concat([fileData, data]);
+      }
     });
-    //let busboy handle the req stream
-    req.pipe(busboy);
-  }
+    //when the stream is done
+    file.on('end', function(){
+      //var key = genRandKey();
+      //set using redis
+      clientBuff.set(
+        req.params.fileId,
+        fileData,
+        function(err, resp) {
+          if (err) { 
+            next(err); 
+          } 
+          else {
+            res.json({message: "File saved", key: req.params.fileId}); //complete the http
+          }
+        }
+      );
+    });
+  });
+  //let busboy handle the req stream
+  req.pipe(busboy);
+}
 );
 
 app.get('/image/:fileId', verifyRead, function(req,res,next) {
@@ -282,13 +345,13 @@ app.get('/image/:fileId', verifyRead, function(req,res,next) {
         next(); // no value means a next which is likely a 404
       } else {
         res.setHeader('Content-Type','image/jpeg'); // set this to whatever you need or use some sort of mime type detection
-        res.end(value); //send the value and end the connection
+        res.json(value); //send the value and end the connection
       }
     }
   });
 });
 
-app.get('/video/:fileId', verifyRead, function(req,res,next) {
+app.get('/video/:fileId'/*, verifyRead*/, function(req,res,next) {
   //grab it from file:[fileId]
   clientBuff.get(req.params.fileId,function(err,value) {
     if (err) { 
@@ -298,7 +361,7 @@ app.get('/video/:fileId', verifyRead, function(req,res,next) {
       if (!value) {
         next(); // no value means a next which is likely a 404
       } else {
-        res.setHeader('Content-Type','video/*'); // set this to whatever you need or use some sort of mime type detection
+        //res.setHeader('Content-Type','video/*'); // set this to whatever you need or use some sort of mime type detection
         res.end(value); //send the value and end the connection
       }
     }
@@ -316,6 +379,24 @@ app.get('/audio/:fileId', verifyRead, function(req,res,next) {
         next(); // no value means a next which is likely a 404
       } else {
         res.setHeader('Content-Type','audio/*'); // set this to whatever you need or use some sort of mime type detection
+        res.json(value); //send the value and end the connection
+      }
+    }
+  });
+});
+
+app.get('/file/:fileId', verifyRead, function(req,res,next) {
+  //grab it from file:[fileId]
+  clientBuff.get(req.params.fileId,function(err,value) {
+    if (err) { 
+      next(err); 
+    } 
+    else {
+      if (!value) {
+        next(); // no value means a next which is likely a 404
+      } else {
+        //console.log("DObro je");
+        //res.setHeader('Content-Type','viedo/*'); // set this to whatever you need or use some sort of mime type detection
         res.end(value); //send the value and end the connection
       }
     }
@@ -351,6 +432,8 @@ app.get('/obj/:key', verifyRead, function(req, res, next){
       if (!results) {
         next();
       } else {
+        delete results[CREATE];
+        delete results[EDIT];
         res.json(results);
       }
     }
@@ -464,7 +547,7 @@ app.post('/login', (req, res) => {
       bcrypt.compare(req.body.password, results.password, function(err, result) {
         if(result){
           jwt.sign({user}, SECRETKEY, { expiresIn: TOKEN_TIME + 'ms' }, (err, shortToken) => {
-            jwt.sign({user}, SECRETKEY, { expiresIn: (20*TOKEN_TIME) + 'ms' }, (err, longToken) => {
+            jwt.sign({user}, SECRETKEY, { expiresIn: (2*TOKEN_TIME) + 'ms' }, (err, longToken) => {
               // req.session.token = longToken;
               // req.session.token.expires = 2*TOKEN_TIME;
               user.token = shortToken;
@@ -485,18 +568,15 @@ app.post('/login', (req, res) => {
 });
 
 app.post('/newToken', (req, res) =>{
-  console.log("New token");
   jwt.verify(req.body.refreshToken, SECRETKEY, (err, authData) => {
     if(err) {
       res.sendStatus(403);
     } else {
       var user = authData.user;
-      console.log(user);
       jwt.sign({user}, SECRETKEY, { expiresIn: TOKEN_TIME + 'ms' }, (err, shortToken) => {
-        jwt.sign({user}, SECRETKEY, { expiresIn: (20*TOKEN_TIME) + 'ms' }, (err, longToken) => {
+        jwt.sign({user}, SECRETKEY, { expiresIn: (2*TOKEN_TIME) + 'ms' }, (err, longToken) => {
           // req.session.token = longToken;
           // req.session.token.expires = 2*TOKEN_TIME;
-          console.log(shortToken);
           user.token = shortToken;
           user.renewableToken = longToken;
           res.json(user);
@@ -506,11 +586,7 @@ app.post('/newToken', (req, res) =>{
   });
 });
 
-var i = 0;
-var j = 0;
-
 app.put('/account/changePassword', verifyRead, function(req, res){
-  console.log("change pass: " + i++);
   var oldPass = req.body.oldPass;
   var newPass = req.body.newPass;
 
@@ -559,7 +635,6 @@ app.get('/updateAllow', verifyUpdate, (req, res) => {
 
 // Verify Token
 function verifyToken(req, res, next, role) {
-  console.log("verify pass: " + j++);
   if(getToken(req, res)){
     jwt.verify(req.token, SECRETKEY, (err, authData) => {
       if(err) {
@@ -603,6 +678,7 @@ function getToken(req, res){
     return true;
   } else {
     // Forbidden
+    console.log("Unauthorized");console.log(req.headers["authorization"]);
     res.sendStatus(403);
     return false;
   }

@@ -11,36 +11,41 @@
   
           <div class="row d-flex justify-content-center">
               <div class="col-lg-8 d-flex align-items-stretch">
-                  <form action="#" method="POST" class="php-email-form roundCorners" id="form" [formGroup]="myForm" (ngSubmit)="update()">
-                      <div class="form-group">
-                        <label for="category">Kategorija</label>
-                        <select class="col-12 form-control-lg" id="category">
-                        </select>
-                      </div>
+                <form [formGroup]="form" (ngSubmit)="saveData()" class="php-email-form roundCorners" id="form">
+                  <div class="form-group">
+                    <label for="category">Kategorija</label>
+                    <select class="col-12 form-control-lg" id="category" (change)="onChangeCategory($event.target.value)">
+                      <option *ngFor="let category of categories" value="{{ category.key }}">{{ category.name }}</option>
+                    </select>
+                  </div>
 
-                      <div class="form-group">
-                        <label for="key">Kod</label>  
-                        <select class="col-12 form-control-lg" id="key" name="key">
-                        </select>
-                      </div>
-                      
-                      
-                      <!-- Javascript enter form-->
-                      <div id="jsform"></div>
-  
-                      <div class="mb-3">
-                          <div class="loading">Loading</div>
-                          <div class="error-message"></div>
-                          <div class="sent-message">Creation was successful. Thank you!</div>
-                      </div>
-                      <div class="text-center">
-                        <button class="btn btn-primary" type="submit" id="subBtn">
-                            <span id="loadSpan" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" hidden></span>
-                            <span id="textSpan" class="sr-only">Save</span>
-                        </button>
-                      </div>           
+                  <div class="form-group">
+                    <label for="code">Kod</label>
+                    <select class="col-12 form-control-lg" id="code" (change)="onChangeCode($event.target.value)">
+                      <option *ngFor="let code of codes" value="{{ code }}">{{ code }}</option>
+                    </select>
+                  </div>
+                  
+                  
+                  <div *ngFor="let field of currentCategory" class="form-group">
+                    <app-input [field]="field" [form]="form" [details]="true"></app-input>
+                  </div>
 
-                  </form>
+                  <div class="mb-3">
+                      <div class="loading">Loading</div>
+                      <div class="error-message"></div>
+                      <div class="sent-message">Creation was successful. Thank you!</div>
+                  </div>
+                  <div class="text-center" *ngIf="this.authService.isUpdateOrAdmin()">
+                    <button class="btn btn-primary" type="submit" id="subBtn">
+                      <div *ngIf="loading">
+                        <span id="loadSpan" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                      </div>
+                      <div *ngIf="!loading">Save</div>
+                    </button>
+                  </div>           
+
+                </form>
               </div>
           </div>
   

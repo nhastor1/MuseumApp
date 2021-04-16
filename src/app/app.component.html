@@ -1,15 +1,4 @@
 ﻿
-<!-- <nav class="navbar navbar-expand navbar-dark bg-dark" *ngIf="user">
-    <div class="navbar-nav">
-        <a class="nav-item nav-link" routerLink="/">Home</a>
-        <a class="nav-item nav-link" routerLink="/search">Search</a>
-        <a class="nav-item nav-link" routerLink="/details">Details</a>
-        <a class="nav-item nav-link" routerLink="/create" *ngIf="isUpdate || isAdmin">Create</a>
-        <a class="nav-item nav-link" routerLink="/admin" *ngIf="isAdmin">Admin</a>
-        <a class="nav-item nav-link" (click)="logout()">Logout</a>
-    </div>
-</nav> -->
-
 <header id="header" class="fixed-top d-flex align-items-center " *ngIf="user">
     <div class="container d-flex justify-content-between align-items-center">
 
@@ -19,13 +8,13 @@
 
       <nav id="navbar" class="navbar">
         <ul>
-          <li *ngIf="isUpdate || isAdmin"><a class="nav-item nav-link" routerLinkActive="active" routerLink="/create">Create</a></li>
+          <li *ngIf="this.authService.isUpdateOrAdmin()"><a class="nav-item nav-link" routerLinkActive="active" routerLink="/create">Create</a></li>
           <li><a class="nav-item nav-link" routerLinkActive="active" routerLink="/search">Search</a></li>
           <li><a class="nav-item nav-link" routerLinkActive="active" routerLink="/details">Details</a></li>
           <li class="dropdown"><a href="#"><span>Account</span> <i class="bi bi-chevron-down"></i></a>
             <ul>
               <li><a class="nav-item nav-link" routerLinkActive="active" routerLink="/changePassword">Change password</a></li>
-              <li *ngIf="isAdmin"><a class="nav-item nav-link" routerLinkActive="active" routerLink="/admin">Account management</a></li>
+              <li *ngIf="this.authService.isAdmin()"><a class="nav-item nav-link" routerLinkActive="active" routerLink="/admin">Account management</a></li>
               <li><a class="nav-item nav-link" (click)="logout()">Logout</a></li>
             </ul>
           </li>

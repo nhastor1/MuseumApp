@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { Component, OnInit, ɵɵqueryRefresh } from '@angular/core';
+import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
+import { AuthenticationService, DataService } from '@app/_services';
 
 @Component({
   selector: 'app-create',
@@ -7,18 +8,50 @@ import { FormGroup, FormControl } from '@angular/forms';
   styleUrls: ['./create.component.scss']
 })
 export class CreateComponent implements OnInit {
-  myForm:any = new FormGroup({
-    firstName: new FormControl(''),
-    lastName: new FormControl(''),
-  });
+  form: FormGroup = new FormGroup({});
 
-  constructor() { }
+  createForm;
+  categories = [];
+  currentCategory = null;
+  currentCategoryKey = null;
+  loading = false;
+
+  constructor(private authService: AuthenticationService, 
+    private dataService: DataService, private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
+    this.dataService.getCategories().subscribe((results) => {
+      this.categories = results;
+      this.onChangeCategory(results[0].key);
+    });
   }
 
-  update(){
+  onChangeCategory(value){
+    this.currentCategoryKey = value;
+    this.dataService.getCategory(value).subscribe((results) => {
+      this.currentCategory = results;
+      this.form = this.getForm(results);
+    });
+  }
 
+  saveData(){
+    this.loading = true;
+    console.log(this.form.getRawValue());
+    this.dataService.addData(this.currentCategory, this.currentCategoryKey, this.form.getRawValue())
+      .then((response) => {
+        console.log(response);
+        this.loading = false;
+      });
+  }
+
+  getForm(results){
+    var obj = {};
+    for(var res of results){
+      // obj[res.name] = new FormControl('');
+      obj[res.name] = [''];
+    }
+    //return new FormGroup(obj);
+    return this.formBuilder.group(obj);
   }
 
 }

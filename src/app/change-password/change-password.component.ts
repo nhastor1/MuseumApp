@@ -25,7 +25,7 @@ export class ChangePasswordComponent implements OnInit {
       this.loading = true;
       this.userService.changePassword(formValues.oldPass, formValues.newPass).subscribe((obj) => {
         this.loading = false;
-        if(obj){
+        if(obj && obj!='undefined'){
           alert(obj.message);
         }
       })

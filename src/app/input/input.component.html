@@ -1,0 +1,26 @@
+<div [ngSwitch]="field.type" [formGroup]="form">
+    <label for="{{ field.name }}">{{ field.name }}</label>
+    <input *ngSwitchCase="'text'" class="col-12 form-control-lg" type="text" name="{{ field.name }}" id="{{ field.name }}" [formControlName]="field.name">
+    <input *ngSwitchCase="'number'" class="col-12 form-control-lg" type="number" name="{{ field.name }}" id="{{ field.name }}" [formControlName]="field.name">
+    <textarea *ngSwitchCase="'textarea'" class="col-12 form-control-lg" rows="4" name="{{ field.name }}" id="{{ field.name }}" [formControlName]="field.name"></textarea>
+    <input *ngSwitchCase="'datetime-local'" class="col-12 form-control-lg" type="datetime-local" name="{{ field.name }}" id="{{ field.name }}" [formControlName]="field.name">
+    <input *ngSwitchCase="'date'" class="col-12 form-control-lg" type="date" name="{{ field.name }}" id="{{ field.name }}" [formControlName]="field.name">
+    <div *ngSwitchCase="'image'">
+        <input class="col-12 form-control-lg" type="file" accept="image/*" name="{{ field.name }}" id="{{ field.name }}" [formControlName]="field.name" (change)="onFileSelect($event)">
+        <div *ngIf="details">
+            <app-media [image]="form.get(field.name)"></app-media>
+        </div>
+    </div>
+    <div *ngSwitchCase="'video'">
+        <input class="col-12 form-control-lg" type="file" accept="video/*" name="{{ field.name }}" id="{{ field.name }}" [formControlName]="field.name" (change)="onFileSelect($event)">
+        <div *ngIf="details">
+            <app-media [video]="form.get(field.name)"></app-media>
+        </div>
+    </div>
+    <div *ngSwitchCase="'audio'">
+        <input class="col-12 form-control-lg" type="file" accept="audio/*" name="{{ field.name }}" id="{{ field.name }}" [formControlName]="field.name" (change)="onFileSelect($event)">
+        <div *ngIf="details">
+            <app-media [audio]="form.get(field.name)"></app-media>
+        </div>
+    </div>
+</div>

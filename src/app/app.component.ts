@@ -12,19 +12,11 @@ import { User, Role } from './_models';
 export class AppComponent {
     user: User;
 
-    constructor(private authenticationService: AuthenticationService) {
-        this.authenticationService.user.subscribe(x => this.user = x);
+    constructor(private authService: AuthenticationService) {
+        this.authService.user.subscribe(x => this.user = x);
     }
-
-    get isAdmin() {
-        return this.user && this.user.role === Role.Admin;
-    }
-
-    get isUpdate() {
-        return this.user && this.user.role === Role.Update;
-    }
-
+    
     logout() {
-        this.authenticationService.logout();
+        this.authService.logout();
     }
 }

@@ -123,12 +123,6 @@
           }
         }
       }
-    }
-  },
-  "defaultProject": "angular-role-based-authorization-example",
-  "schematics": {
-    "@schematics/angular:component": {
-      "style": "scss"
-    }
-  }
+    }},
+  "defaultProject": "angular-role-based-authorization-example"
 }
