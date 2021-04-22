@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Form, FormControl, FormGroup } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DataService } from '@app/_services';
@@ -8,31 +8,35 @@ import { DataService } from '@app/_services';
   templateUrl: './media.component.html',
   styleUrls: ['./media.component.scss']
 })
-export class MediaComponent implements OnInit {
+export class MediaComponent implements OnInit, OnChanges {
   @Input() video:FormControl;
-  @Input() audio:FormControl;
   @Input() image:FormControl;
-  @Input() fieldName:any;
-  @ViewChild('videoPlayer') videoplayer: ElementRef;
-  @ViewChild('audioPlayer') audioplayer: ElementRef;
-  @Input() file:any;
+  @Input() audio:FormControl;
+  file:any;
 
   urlCreator = window.URL || window.webkitURL;
 
   constructor(private dataService: DataService, private sanitizer : DomSanitizer) { }
 
-  ngOnInit(): void {
-    setTimeout(()=>{
-      if(this.video)
-        this.clicked(this.video.value);
-      else if(this.image)
-        this.clicked(this.image.value);
-      else if(this.audio)
-        this.clicked(this.audio.value);
-    }, 1000);
+  ngOnChanges(changes: SimpleChanges): void {
+    if(this.video && this.video.value != ""){
+      console.log("Video");
+      this.getFile(this.video.value);
+    }
+    else if(this.image && this.image.value != ""){
+      console.log("Image");
+      this.getFile(this.image.value);
+    }
+    else if(this.audio && this.audio.value != ""){
+      console.log("Audio");
+      this.getFile(this.audio.value);
+    }
   }
 
-  clicked(param){
+  ngOnInit(): void {
+  }
+
+  getFile(param){
     console.log("SVASTA NESTA");
     console.log(param);
     if(this.video)

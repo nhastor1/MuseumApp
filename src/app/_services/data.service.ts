@@ -30,42 +30,9 @@ export class DataService{
         return this.http.get<any>(`${environment.apiUrl}/keys/${key}`);
     }
 
-    getData(category, key){
-        let fileNumber = this.getFileNumber(category);
+    getData(key){
+        //let fileNumber = this.getFileNumber(category);
         return this.http.get<any>(`${environment.apiUrl}/obj/${key}`);
-            // .pipe((results) => {
-            //     return results;
-            // });
-
-        // return new Promise((resolve)=>{
-        //     this.http.get<any>(`${environment.apiUrl}/obj/${key}`).subscribe((response) => {
-        //             // get files
-        //             console.log(response);
-        //             if(fileNumber==0)
-        //                 resolve(response);
-        //             else{
-        //                 for(let row of category){
-        //                     if(this.fileList.isFile(row.type)){
-        //                         (function(name, http){
-        //                             console.log(`${environment.apiUrl}/file/${response[name]}`)
-        //                             http.get<any>(`${environment.apiUrl}/file/${response[name]}`)
-        //                                 //.map(response => response.json())
-        //                                 .subscribe((response) => {
-        //                                     fileNumber--;
-        //                                     response.data.blob().then(blobResponse => {
-        //                                         response[name] = this.urlCreator.createObjectURL(blobResponse);
-        //                                         if(fileNumber==0){
-        //                                             console.log(response);
-        //                                             resolve(response);
-        //                                         }
-        //                                     });
-        //                                 })
-        //                         })(row.name, this.http);
-        //                     }
-        //                 }
-        //             }
-        //       });
-        // })
     }
 
     getFile(type, key){
@@ -104,7 +71,7 @@ export class DataService{
     }
 
     private downloadFile(data: any) {
-        const blob = new Blob([data], { type: '' });
+        const blob = new Blob([data], { type: '*/*' });
         const url= window.URL.createObjectURL(blob);
         return url;
     }
