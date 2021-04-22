@@ -44,7 +44,7 @@ export class DetailsComponent implements OnInit {
   
   onChangeCode(value){
     console.log(value);
-    this.dataService.getData(this.currentCategory, value).subscribe((results) => {
+    this.dataService.getData(value).subscribe((results) => {
       console.log(results);
       this.setForm(this.currentCategory, results);
     })
@@ -52,24 +52,24 @@ export class DetailsComponent implements OnInit {
 
   saveData(){
     this.loading = true;
-    // console.log(this.form.getRawValue());
-    // this.dataService.addData(this.currentCategory, this.currentCategoryKey, this.form.getRawValue())
-    //   .then((response) => {
-    //     console.log(response);
-    //     this.loading = false;
-    //   });
   }
 
   setForm(results, data){
     let obj = {};
     let i=0;
-    for(var res of results){
-      obj[res.name] = [''];
-    }
     if(data)
-      this.form.setValue(data);
+      for(var key of Object.keys(data))
+        obj[key] = [data[key]]
     else
-      this.form = this.formBuilder.group(obj);
+      for(var res of results)
+        obj[res.name] = [''];
+    console.log(obj);
+    this.form = this.formBuilder.group(obj);
+    // if(data)
+    //   //this.form.setValue(data);
+    //   this.form = this.formBuilder.group(data);
+    // else
+    //   this.form = this.formBuilder.group(obj);
   }
   
 }

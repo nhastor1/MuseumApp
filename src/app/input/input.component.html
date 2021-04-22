@@ -7,19 +7,19 @@
     <input *ngSwitchCase="'date'" class="col-12 form-control-lg" type="date" name="{{ field.name }}" id="{{ field.name }}" [formControlName]="field.name">
     <div *ngSwitchCase="'image'">
         <input class="col-12 form-control-lg" type="file" accept="image/*" name="{{ field.name }}" id="{{ field.name }}" [formControlName]="field.name" (change)="onFileSelect($event)">
-        <div *ngIf="details">
+        <div>
             <app-media [image]="form.get(field.name)"></app-media>
         </div>
     </div>
     <div *ngSwitchCase="'video'">
         <input class="col-12 form-control-lg" type="file" accept="video/*" name="{{ field.name }}" id="{{ field.name }}" [formControlName]="field.name" (change)="onFileSelect($event)">
-        <div *ngIf="details">
+        <div>
             <app-media [video]="form.get(field.name)"></app-media>
         </div>
     </div>
     <div *ngSwitchCase="'audio'">
         <input class="col-12 form-control-lg" type="file" accept="audio/*" name="{{ field.name }}" id="{{ field.name }}" [formControlName]="field.name" (change)="onFileSelect($event)">
-        <div *ngIf="details">
+        <div>
             <app-media [audio]="form.get(field.name)"></app-media>
         </div>
     </div>
