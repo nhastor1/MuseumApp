@@ -1,1 +1,6 @@
+Nodejs:
 npm install express path body-parser redis busboy random-key url bcrypt jsonwebtoken express-session cors --save
+
+Angular:
+npm install --save jquery
+npm install --save toastr

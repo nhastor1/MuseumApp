@@ -1,6 +1,6 @@
 import { Component, OnInit, ɵɵqueryRefresh } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
-import { AuthenticationService, DataService } from '@app/_services';
+import { AuthenticationService, DataService, ToastrService } from '@app/_services';
 
 @Component({
   selector: 'app-create',
@@ -17,7 +17,8 @@ export class CreateComponent implements OnInit {
   loading = false;
 
   constructor(private authService: AuthenticationService, 
-    private dataService: DataService, private formBuilder: FormBuilder) { }
+    private dataService: DataService, private formBuilder: FormBuilder,
+    private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.dataService.getCategories().subscribe((results) => {
@@ -41,6 +42,7 @@ export class CreateComponent implements OnInit {
       .then((response) => {
         console.log(response);
         this.loading = false;
+        this.toastr.success("Data added");
       });
   }
 

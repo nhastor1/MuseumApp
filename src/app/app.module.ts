@@ -20,6 +20,7 @@ import { DetailsComponent } from './details/details.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { InputComponent } from './input/input.component';
 import { MediaComponent } from './media/media.component';
+import { ToastrService } from './_services';
 @NgModule({
     imports: [
         BrowserModule,
@@ -41,7 +42,7 @@ import { MediaComponent } from './media/media.component';
         MediaComponent],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-
+        ToastrService
         // provider used to create fake backend
         //fakeBackendProvider
     ],
