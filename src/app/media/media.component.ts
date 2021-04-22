@@ -1,5 +1,5 @@
-import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { Form, FormControl, FormGroup } from '@angular/forms';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DataService } from '@app/_services';
 
@@ -22,14 +22,17 @@ export class MediaComponent implements OnInit, OnChanges {
     if(this.video && this.video.value != ""){
       console.log("Video");
       this.getFile(this.video.value);
+      this.video.setValue("");
     }
     else if(this.image && this.image.value != ""){
       console.log("Image");
       this.getFile(this.image.value);
+      this.image.setValue("");
     }
     else if(this.audio && this.audio.value != ""){
       console.log("Audio");
       this.getFile(this.audio.value);
+      this.audio.setValue("");
     }
   }
 
@@ -47,35 +50,15 @@ export class MediaComponent implements OnInit, OnChanges {
       this.dataService.getFile('audio', param).subscribe((data) => this.file = data);
   }
 
-  // getSource(param){
-  //   console.log("SVASTA NESTA");
-  //   console.log(param);
-  //   if(this.video)
-  //     this.dataService.getFile('video', param).subscribe((data) => this.file = this.sanitizer.bypassSecurityTrustStyle(`url(${data})`));
-  //   else if(this.image)
-  //     this.dataService.getFile('image', param).subscribe((data) => this.file = this.sanitizer.bypassSecurityTrustStyle(`url(${data})`));
-  //   else if(this.audio)
-  //     this.dataService.getFile('audio', param).subscribe((data) => this.file = this.sanitizer.bypassSecurityTrustStyle(`url(${data})`));
-  // }
-
-  // onSelectedFile(ev) {
-  //   let file = ev.target.files[0];
-  //   var URL = window.URL;
-  //   this.file = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file));
-  // }
-
-  // setContent(data){
-  //   console.log(data);
-  //   console.log(typeof data)
-  //   let blob = new Blob([data.data], {type: 'video/mp4'});
-  //   var URL = window.URL;
-  //   this.file = URL.createObjectURL(blob);
-  //   //this.file = window.URL.createObjectURL(blob);
-  //   console.log(this.file)
-  //   // data.data.blob().then(blobResponse => {
-  //   //     this.file = this.urlCreator.createObjectURL(blobResponse);
-  //   //     console.log(this.file)
-  //   // });
+  // onChangeFile(file: FileList){
+  //   console.log("UCITAVA SE 1");
+  //   var reader = new FileReader();
+  //   reader.onload = (event:any) => {
+  //     this.file = event.target.result;
+  //     console.log("UCITALO SE");
+  //   }
+  //   reader.readAsDataURL(file.item(0));
+  //   console.log("UCITAVA SE");
   // }
 
 }

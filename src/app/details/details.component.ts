@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Role } from '@app/_models/role';
-import { AuthenticationService, DataService } from '@app/_services';
+import { AuthenticationService, DataService, ToastrService } from '@app/_services';
 
 @Component({
   selector: 'app-details',
@@ -16,10 +15,12 @@ export class DetailsComponent implements OnInit {
   codes = [];
   currentCategory = null;
   currentCategoryKey = null;
+  currentDataKey = null;
   loading = false;
 
   constructor(public authService: AuthenticationService, 
-    private dataService: DataService, private formBuilder: FormBuilder) { }
+    private dataService: DataService, private formBuilder: FormBuilder,
+    private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.dataService.getCategories().subscribe((results) => {
@@ -44,6 +45,7 @@ export class DetailsComponent implements OnInit {
   
   onChangeCode(value){
     console.log(value);
+    this.currentDataKey = value;
     this.dataService.getData(value).subscribe((results) => {
       console.log(results);
       this.setForm(this.currentCategory, results);
@@ -52,6 +54,13 @@ export class DetailsComponent implements OnInit {
 
   saveData(){
     this.loading = true;
+    console.log(this.form.getRawValue());
+    this.dataService.updateData(this.currentCategory, this.currentCategoryKey, this.form.getRawValue(), this.currentDataKey)
+      .then((response) => {
+        console.log(response);
+        this.loading = false;
+        this.toastr.success("Data edited");
+      });
   }
 
   setForm(results, data){

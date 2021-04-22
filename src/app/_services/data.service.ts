@@ -31,7 +31,6 @@ export class DataService{
     }
 
     getData(key){
-        //let fileNumber = this.getFileNumber(category);
         return this.http.get<any>(`${environment.apiUrl}/obj/${key}`);
     }
 
@@ -60,9 +59,43 @@ export class DataService{
                                 this.http.post<any>(`${environment.apiUrl}/file/${response.data[row.name]}`, formData).subscribe((data) => {
                                         fileNumber--;
                                         if(fileNumber==0)
-                                            // return of({message});
                                             resolve({message: "Data added"});
                                     })
+                            }
+                        }
+                    }
+              });
+        })
+    }
+
+    updateData(category, key, data, dataKey){
+        let fileNumber = this.getFileNumber(category);
+
+        return new Promise((resolve)=>{
+            this.http.put<any>(`${environment.apiUrl}/data/${dataKey}`, JSON.stringify(data), { headers: new HttpHeaders({
+                'Content-Type':  'application/json; charset=utf-8'
+              })}).subscribe((response) => {
+                    // update files
+                    console.log(response);
+                    if(fileNumber==0)
+                        resolve({message: "Data edited"});
+                    else{
+                        for(var row of category){
+                            if(this.fileList.isFile(row.type)){
+                                if(data[row.name] != ""){
+                                    let formData:FormData = new FormData();
+                                    formData.append('file', data[row.name], data[row.name].name);
+                                    this.http.post<any>(`${environment.apiUrl}/file/${response.data[row.name]}`, formData).subscribe((data) => {
+                                            fileNumber--;
+                                            if(fileNumber==0)
+                                                resolve({message: "Data edited"});
+                                        })
+                                }
+                                else{
+                                    fileNumber--;
+                                        if(fileNumber==0)
+                                            resolve({message: "Data edited"});
+                                }
                             }
                         }
                     }

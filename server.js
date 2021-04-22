@@ -10,8 +10,6 @@ const saltRounds = 10;
 const jwt = require('jsonwebtoken');
 const session = require('express-session');
 const cors = require('cors');
-// const { UrlSegment } = require('@angular/router');
-// const { json } = require('body-parser');
 
 const SECRETKEY = 'shhhhh';
 const TOKEN_TIME = 1 * 60 * 60 * 1000;
@@ -188,73 +186,95 @@ app.get('/category', verifyRead, function(req,res){
 });
 
 app.post('/category/:key', verifyUpdate, function(req, res, next){
-  // client.hgetall(req.params.key, function(err, results){
-  //   if(!results){
-  //     res.json({
-  //       error: req.params.key + ' does not exist'
-  //     });
-  //   } else {
-      // set keys for files
-      let category = allCategories[req.params.key];
-      for(let key of Object.keys(category)){
-        if(FILES.includes(category[key])){
-          req.body[key] = genRandKey();
-        }
-      }
-      // convert JSON to array
-      var obj2dArray = Object.entries(req.body);
-      objArray = [].concat.apply([], obj2dArray);
-      var date = Date.now();
-      objArray = objArray.concat([CREATE, date, EDIT, date]);
-      objKey = genRandKeyCat(req.params.key);
+  let category = allCategories[req.params.key];
+  for(let key of Object.keys(category)){
+    if(FILES.includes(category[key])){
+      req.body[key] = genRandKey();
+    }
+  }
+  // convert JSON to array
+  var obj2dArray = Object.entries(req.body);
+  objArray = [].concat.apply([], obj2dArray);
+  var date = Date.now();
+  objArray = objArray.concat([CREATE, date, EDIT, date]);
+  objKey = genRandKeyCat(req.params.key);
 
-      client.hmset(objKey, objArray, function(err, result){
-        if(err){
-          client.del(objKey, function(value){
-            res.json({error: "Error"});
-          });
-        }
-        else{
-          res.json({objKey: objKey, data: req.body});
-        }
+  client.hmset(objKey, objArray, function(err, result){
+    if(err){
+      client.del(objKey, function(value){
+        res.json({error: "Error"});
       });
-    // }
-  // });
+    }
+    else{
+      res.json({objKey: objKey, data: req.body});
+    }
+  });
 });
 
-function addData(key, data){
-  return new Promise((resolve, reject) => {
-    client.set(key, data, function(err, value){
-      if (err) { 
-        reject(err);
-      } 
-      else {
-        if (!value) {
-          reject();
-        } else {
-          resolve(value);
-        }
-      }
-    });
-  });
-}
+app.put('/data/:key', verifyUpdate, function(req, res, next){
+  let category = allCategories[req.params.key.substring(0, req.params.key.indexOf('_'))];
+  for(let key of Object.keys(category)){
+    if(FILES.includes(category[key])){
+      delete req.body[key];
+    }
+  }
+  // convert JSON to array
+  var obj2dArray = Object.entries(req.body);
+  objArray = [].concat.apply([], obj2dArray);
+  var date = Date.now();
+  objArray = objArray.concat([EDIT, date]);
+  objKey = req.params.key;
 
-function getData(key){
-  return new Promise((resolve, reject) => {
-    client.get(key, function(err, value){
-      if (err) { 
-        reject(err); 
-      } 
-      else {
-        if (!value) {
-          reject();
-        } else {
-          resolve(value);
-        }
-      }
-    });
+  client.hmset(objKey, objArray, function(err, result){
+    if(err){
+      client.del(objKey, function(value){
+        res.json({error: "Error"});
+      });
+    }
+    else{
+      client.hgetall(objKey, function(err, result){
+        if(err)
+          res.json({error: "Error"});
+        else
+          res.json({objKey: objKey, data: result});
+      })
+    }
   });
-}
+});
+
+// function addData(key, data){
+//   return new Promise((resolve, reject) => {
+//     client.set(key, data, function(err, value){
+//       if (err) { 
+//         reject(err);
+//       } 
+//       else {
+//         if (!value) {
+//           reject();
+//         } else {
+//           resolve(value);
+//         }
+//       }
+//     });
+//   });
+// }
+
+// function getData(key){
+//   return new Promise((resolve, reject) => {
+//     client.get(key, function(err, value){
+//       if (err) { 
+//         reject(err); 
+//       } 
+//       else {
+//         if (!value) {
+//           reject();
+//         } else {
+//           resolve(value);
+//         }
+//       }
+//     });
+//   });
+// }
 
 // function saveFile(req, key) {
 //   return new Promise((resolve, reject) => {
