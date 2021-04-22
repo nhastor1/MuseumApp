@@ -206,7 +206,9 @@ app.post('/category/:key', verifyUpdate, function(req, res, next){
       });
     }
     else{
-      res.json({objKey: objKey, data: req.body});
+      addSearch(req.body[NAZIV], objKey).then((result) =>{
+        res.json({objKey: objKey, data: req.body});
+      });
     }
   });
 });
@@ -225,21 +227,30 @@ app.put('/data/:key', verifyUpdate, function(req, res, next){
   objArray = objArray.concat([EDIT, date]);
   objKey = req.params.key;
 
-  client.hmset(objKey, objArray, function(err, result){
-    if(err){
-      client.del(objKey, function(value){
-        res.json({error: "Error"});
-      });
-    }
-    else{
-      client.hgetall(objKey, function(err, result){
-        if(err)
+  client.hget(objKey, NAZIV, function(err, oldName){
+    client.hmset(objKey, objArray, function(err, result){
+      if(err){
+        client.del(objKey, function(value){
           res.json({error: "Error"});
-        else
-          res.json({objKey: objKey, data: result});
-      })
-    }
-  });
+        });
+      }
+      else{
+        client.hgetall(objKey, function(err, result){
+          if(err)
+            res.json({error: "Error"});
+          else if(oldName!=req.body[NAZIV]){
+            deleteSearch(oldName, req.params.key).then((res1)=>{
+              addSearch(req.body[NAZIV], req.params.key).then((res2) =>{
+                res.json({objKey: objKey, data: result});
+              });
+            });
+          }
+          else
+            res.json({objKey: objKey, data: result});
+        })
+      }
+    });
+  })
 });
 
 // function addData(key, data){
@@ -460,61 +471,87 @@ app.get('/obj/:key', verifyRead, function(req, res, next){
   });
 });
 
-app.post('/search', verifyUpdate, function(req, res, next){
-  var listSearch = req.body.text.toLowerCase().split(" ").filter(word => word.length > 1);
-  var keyOfObject = req.body.key;
+//app.post('/search', verifyUpdate, function(req, res, next){
+function addSearch(text, objKey){
+  return new Promise((resolve, reject) => {
+    var listSearch = text.toLowerCase().split(" ").filter(word => word.length > 1);
+    var keyOfObject = objKey;
+    var searchCount = listSearch.length;
 
-  for(var element of listSearch){
-    // save value of el
-    (function(el){
-      client.hget(SEARCH, el, function(err, results){
-        if (err) { 
-          next(err); 
-        } 
-        else {
-          if (!results) {
-            // If there are no results we need to add set for keyword "el"
-            var key = genRandKey();
-            client.hset(SEARCH, el, key, function(err){
-              if (err) { 
-                next(err); 
-              } 
-            });
-            client.sadd(key, keyOfObject, function(err){
-              if (err) { 
-                next(err); 
-              } 
-            });
-          } else {
-            // If there are result we just add key of object to that set
-            client.sadd(results, keyOfObject, function(err){
-              if (err) { 
-                next(err); 
-              } 
-            })
+    for(var element of listSearch){
+      // save value of el
+      (function(el){
+        client.hget(SEARCH, el, function(err, results){
+          if (err) { 
+            reject(err); 
+          } 
+          else {
+            if (!results) {
+              // If there are no results we need to add set for keyword "el"
+              var key = genRandKey();
+              client.hset(SEARCH, el, key, function(err){
+                if (err) { 
+                  reject(err); 
+                } 
+                else{
+                  client.sadd(key, keyOfObject, function(err){
+                    if (err) { 
+                      reject(err); 
+                    }
+                    else{
+                      searchCount--;
+                      if(searchCount==0)
+                        resolve({message: "Search paramters added"});
+                    }
+                  });}
+              });
+            } else {
+              // If there are result we just add key of object to that set
+              client.sadd(results, keyOfObject, function(err){
+                if (err) { 
+                  reject(err); 
+                } 
+                else{
+                  searchCount--;
+                  if(searchCount==0)
+                    resolve({message: "Search paramters added"});
+                }
+              })
+            }
           }
-        }
-      });
-    })(element);
-  }
-  res.json({message: "Search paramters added"});
-});
+        });
+      })(element);
+    }
+  });
+};
 
-app.post('/searchDelete', verifyUpdate, function(req, res, next){
-  var listSearch = req.body.text.toLowerCase().split(" ").filter(word => word.length > 1);
-  var keyOfObject = req.body.key;
+//app.post('/searchDelete', verifyUpdate, function(req, res, next){
+function deleteSearch(text, objKey){
+  return new Promise((resolve, reject) => {
+    var listSearch = text.toLowerCase().split(" ").filter(word => word.length > 1);
+    var keyOfObject = objKey;
+    var searchCount = listSearch.length;
 
-  for(var element of listSearch){
-    (function(el){
-      client.hget(SEARCH, el, function(err, results){
-        if (results) { 
-          client.srem(results, keyOfObject);
-        } 
-      });
-     })(element);
-  }
-  res.json({message: "Search paramters removed"});
-});
+    for(var element of listSearch){
+      (function(el){
+        client.hget(SEARCH, el, function(err, results){
+          if (results) { 
+            client.srem(results, keyOfObject, function(err, res){
+              searchCount--;
+              if(searchCount==0)
+                resolve({message: "Search paramters removed"});
+            });
+          } 
+          else{
+            searchCount--;
+              if(searchCount==0)
+                resolve({message: "Search paramters removed"});
+          }
+        });
+      })(element);
+    }
+  });
+}
 
 
 app.get('/search', verifyRead, function(req, res, next){

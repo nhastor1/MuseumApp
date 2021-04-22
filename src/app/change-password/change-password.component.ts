@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { UserService } from '@app/_services';
+import { ToastrService, UserService } from '@app/_services';
 
 @Component({
   selector: 'app-change-password',
@@ -15,7 +15,7 @@ export class ChangePasswordComponent implements OnInit {
   });
   loading = false;
 
-  constructor(private userService:UserService) { }
+  constructor(private userService:UserService, private toastr: ToastrService) { }
 
   ngOnInit(): void {
   }
@@ -26,7 +26,7 @@ export class ChangePasswordComponent implements OnInit {
       this.userService.changePassword(formValues.oldPass, formValues.newPass).subscribe((obj) => {
         this.loading = false;
         if(obj && obj!='undefined'){
-          alert(obj.message);
+          this.toastr.error(obj.message);
         }
       })
     }
