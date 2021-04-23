@@ -60,6 +60,9 @@ export class DetailsComponent implements OnInit {
         console.log(response);
         this.loading = false;
         this.toastr.success("Data edited");
+      },
+      (error) => {
+        this.toastr.error(error.message);
       });
   }
 

@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { HomeComponent } from './home';
-import { AdminComponent } from './admin';
-import { LoginComponent } from './login';
+import { HomeComponent } from './components/home';
+import { AdminComponent } from './components/admin';
+import { LoginComponent } from './components/login';
 import { AuthGuard } from './_helpers';
 import { Role } from './_models';
-import { CreateComponent } from './create/create.component';
-import { DetailsComponent } from './details/details.component';
-import { SearchComponent } from './search/search.component';
-import { ChangePasswordComponent } from './change-password/change-password.component';
+import { CreateComponent } from './components/create/create.component';
+import { DetailsComponent } from './components/details/details.component';
+import { SearchComponent } from './components/search/search.component';
+import { ChangePasswordComponent } from './components/change-password/change-password.component';
 
 const routes: Routes = [
     {

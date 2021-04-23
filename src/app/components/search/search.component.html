@@ -1,11 +1,11 @@
 <main id="main">
 
-    <form action="" id="form_search" [formGroup]="myForm" (ngSubmit)="update()">
+    <form action="" id="form_search" [formGroup]="form" (ngSubmit)="search()">
       <section class="row justify-content-center">
         <select name="category" id="category" class="form-select-lg col-md-3">
           <option value='*'>Sve kategorije</option>
         </select>
-        <input id="textSearch" type="text" class="form-select-lg col-md-4">
+        <input formControlName="search" id="textSearch" type="text" class="form-select-lg col-md-4">
         <input id="btnSearch" type="submit" class="form-select-lg col-md-2" value="Pretraga">
       </section>
     </form>

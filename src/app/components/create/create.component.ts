@@ -43,6 +43,9 @@ export class CreateComponent implements OnInit {
         console.log(response);
         this.loading = false;
         this.toastr.success("Data added");
+      },
+      (error) => {
+        this.toastr.error(error.message);
       });
   }
 

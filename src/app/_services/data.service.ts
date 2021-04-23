@@ -34,6 +34,11 @@ export class DataService{
         return this.http.get<any>(`${environment.apiUrl}/obj/${key}`);
     }
 
+    search(text){
+        text = text.replace(/\s+/g, '+');
+        return this.http.get<any>(`${environment.apiUrl}/search?search_query=${text}`);
+    }
+
     getFile(type, key){
         type = "file";
         console.log(`${environment.apiUrl}/${type}/${key}`)
@@ -44,11 +49,13 @@ export class DataService{
     addData(category, key, data){
         let fileNumber = this.getFileNumber(category);
 
-        return new Promise((resolve)=>{
+        return new Promise((resolve, reject)=>{
             this.http.post<any>(`${environment.apiUrl}/category/${key}`, JSON.stringify(data), { headers: new HttpHeaders({
                 'Content-Type':  'application/json; charset=utf-8'
               })}).subscribe((response) => {
                     // add files
+                    if(response.error)
+                        reject({message:"Can not add data"});
                     if(fileNumber==0)
                         resolve({message: "Data added"});
                     else{
@@ -71,12 +78,14 @@ export class DataService{
     updateData(category, key, data, dataKey){
         let fileNumber = this.getFileNumber(category);
 
-        return new Promise((resolve)=>{
+        return new Promise((resolve, reject)=>{
             this.http.put<any>(`${environment.apiUrl}/data/${dataKey}`, JSON.stringify(data), { headers: new HttpHeaders({
                 'Content-Type':  'application/json; charset=utf-8'
               })}).subscribe((response) => {
                     // update files
                     console.log(response);
+                    if(response.error)
+                        reject({message:"Can not edit data"});
                     if(fileNumber==0)
                         resolve({message: "Data edited"});
                     else{

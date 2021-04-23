@@ -557,7 +557,7 @@ function deleteSearch(text, objKey){
 app.get('/search', verifyRead, function(req, res, next){
   var listSearch = URL.parse(req.url,true).query.search_query.toLowerCase().split(" ").filter(word => word.length > 1);
   var objectKeys = [];
-  var counter = 0;
+  var counter = listSearch.length;
 
   for(var element of listSearch){
       client.hget(SEARCH, element, function(err, results){
@@ -569,29 +569,36 @@ app.get('/search', verifyRead, function(req, res, next){
             client.smembers(results, function(err, results2){
               if(results2){
                 objectKeys = objectKeys.concat(results2);
-                counter++;
-                if(counter==listSearch.length){
-                  // Sort array by number of duplicates, and remove duplicates
-                  var map = objectKeys.reduce(function(p, c) {
-                    p[c] = (p[c] || 0) + 1;
-                    return p;
-                  }, {});
-                  
-                  objectKeys = Object.keys(map).sort(function(a, b) {
-                    return map[b] - map[a];
-                  });
-            
-                  res.json(objectKeys);
-                }
+                if(--counter==0)
+                  searchFinish(req, res, next, objectKeys);
+              }
+              else{
+                if(--counter==0)
+                  searchFinish(req, res, next, objectKeys);
               }
             });
           } else {
-            counter++;
+            if(--counter==0)
+              searchFinish(req, res, next, objectKeys);
           }
         }
       });
   }
 });
+
+function searchFinish(req, res, next, objectKeys){
+  // Sort array by number of duplicates, and remove duplicates
+  var map = objectKeys.reduce(function(p, c) {
+    p[c] = (p[c] || 0) + 1;
+    return p;
+  }, {});
+  
+  objectKeys = Object.keys(map).sort(function(a, b) {
+    return map[b] - map[a];
+  });
+
+  res.json(objectKeys);
+}
 
 app.post('/login', (req, res) => {
   user = {
