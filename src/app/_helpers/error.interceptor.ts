@@ -16,7 +16,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         if (isLoggedIn && isApiUrl && !this.isRefreshing) {
             request = this.addToken(request, this.authenticationService.userValue.token);
             // console.log(this.authenticationService.userValue.token);
-            // console.log(request);
+            console.log(request);
         }
 
         return this.handleRequest(request, next);

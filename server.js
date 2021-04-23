@@ -69,11 +69,15 @@ function getCategories(){
     (function(key){
       client.hgetall(cat.key, function(err, results){
         var number = 0;
+        var hasImage = false;
         for(var el of Object.values(results)){
           if(FILES.includes(el))
             number++;
+          if(el==IMAGE)
+            hasImage = true;
         }
         results.numberOfFiles = number;
+        results.hasImage = hasImage;
         allCategories[key] = results;
       });
     })(cat.key);
@@ -253,80 +257,6 @@ app.put('/data/:key', verifyUpdate, function(req, res, next){
   })
 });
 
-// function addData(key, data){
-//   return new Promise((resolve, reject) => {
-//     client.set(key, data, function(err, value){
-//       if (err) { 
-//         reject(err);
-//       } 
-//       else {
-//         if (!value) {
-//           reject();
-//         } else {
-//           resolve(value);
-//         }
-//       }
-//     });
-//   });
-// }
-
-// function getData(key){
-//   return new Promise((resolve, reject) => {
-//     client.get(key, function(err, value){
-//       if (err) { 
-//         reject(err); 
-//       } 
-//       else {
-//         if (!value) {
-//           reject();
-//         } else {
-//           resolve(value);
-//         }
-//       }
-//     });
-//   });
-// }
-
-// function saveFile(req, key) {
-//   return new Promise((resolve, reject) => {
-//     var busboy  = new Busboy({ headers: req.headers }), fileData;
-
-//     busboy.on(key, function(fieldname, file) {
-//       //the data event of the stream
-//       file.on('data', function(data) {
-//         //setup the  fileData var if empty
-//         if (!fileData) { 
-//           fileData = data; 
-//         } 
-//         else {
-//           //concat it to the first fileData
-//           fileData = Buffer.concat([fileData, data]);
-//         }
-//       });
-//       //when the stream is done
-//       file.on('end', function(){
-//         //var key = genRandKey();
-//         //set using redis
-//         clientBuff.set(
-//           key,
-//           fileData,
-//           function(err, resp) {
-//             if (err) { 
-//               reject(err); 
-//             } 
-//             else {
-//               resolve(); //complete the http
-//             }
-//           }
-//         );
-//       });
-//     });
-//     //let busboy handle the req stream
-//     req.pipe(busboy);
-//   });
-// }
-
-
 app.post('/file/:fileId', verifyUpdate, function(req,res,next) {
   var busboy  = new Busboy({ headers: req.headers }), fileData;
 
@@ -365,56 +295,56 @@ app.post('/file/:fileId', verifyUpdate, function(req,res,next) {
 }
 );
 
-app.get('/image/:fileId', verifyRead, function(req,res,next) {
-  //grab it from file:[fileId]
-  clientBuff.get(req.params.fileId,function(err,value) {
-    if (err) { 
-      next(err); 
-    } 
-    else {
-      if (!value) {
-        next(); // no value means a next which is likely a 404
-      } else {
-        res.setHeader('Content-Type','image/jpeg'); // set this to whatever you need or use some sort of mime type detection
-        res.json(value); //send the value and end the connection
-      }
-    }
-  });
-});
+// app.get('/image/:fileId', verifyRead, function(req,res,next) {
+//   //grab it from file:[fileId]
+//   clientBuff.get(req.params.fileId,function(err,value) {
+//     if (err) { 
+//       next(err); 
+//     } 
+//     else {
+//       if (!value) {
+//         next(); // no value means a next which is likely a 404
+//       } else {
+//         res.setHeader('Content-Type','image/jpeg'); // set this to whatever you need or use some sort of mime type detection
+//         res.json(value); //send the value and end the connection
+//       }
+//     }
+//   });
+// });
 
-app.get('/video/:fileId'/*, verifyRead*/, function(req,res,next) {
-  //grab it from file:[fileId]
-  clientBuff.get(req.params.fileId,function(err,value) {
-    if (err) { 
-      next(err); 
-    } 
-    else {
-      if (!value) {
-        next(); // no value means a next which is likely a 404
-      } else {
-        //res.setHeader('Content-Type','video/*'); // set this to whatever you need or use some sort of mime type detection
-        res.end(value); //send the value and end the connection
-      }
-    }
-  });
-});
+// app.get('/video/:fileId'/*, verifyRead*/, function(req,res,next) {
+//   //grab it from file:[fileId]
+//   clientBuff.get(req.params.fileId,function(err,value) {
+//     if (err) { 
+//       next(err); 
+//     } 
+//     else {
+//       if (!value) {
+//         next(); // no value means a next which is likely a 404
+//       } else {
+//         //res.setHeader('Content-Type','video/*'); // set this to whatever you need or use some sort of mime type detection
+//         res.end(value); //send the value and end the connection
+//       }
+//     }
+//   });
+// });
 
-app.get('/audio/:fileId', verifyRead, function(req,res,next) {
-  //grab it from file:[fileId]
-  clientBuff.get(req.params.fileId,function(err,value) {
-    if (err) { 
-      next(err); 
-    } 
-    else {
-      if (!value) {
-        next(); // no value means a next which is likely a 404
-      } else {
-        res.setHeader('Content-Type','audio/*'); // set this to whatever you need or use some sort of mime type detection
-        res.json(value); //send the value and end the connection
-      }
-    }
-  });
-});
+// app.get('/audio/:fileId', verifyRead, function(req,res,next) {
+//   //grab it from file:[fileId]
+//   clientBuff.get(req.params.fileId,function(err,value) {
+//     if (err) { 
+//       next(err); 
+//     } 
+//     else {
+//       if (!value) {
+//         next(); // no value means a next which is likely a 404
+//       } else {
+//         res.setHeader('Content-Type','audio/*'); // set this to whatever you need or use some sort of mime type detection
+//         res.json(value); //send the value and end the connection
+//       }
+//     }
+//   });
+// });
 
 app.get('/file/:fileId', verifyRead, function(req,res,next) {
   //grab it from file:[fileId]
@@ -553,7 +483,7 @@ function deleteSearch(text, objKey){
   });
 }
 
-
+// HSCAN search 0 match *ourWord*
 app.get('/search', verifyRead, function(req, res, next){
   var listSearch = URL.parse(req.url,true).query.search_query.toLowerCase().split(" ").filter(word => word.length > 1);
   var objectKeys = [];
@@ -561,13 +491,16 @@ app.get('/search', verifyRead, function(req, res, next){
   if(counter==0)
     res.json([]);
   for(var element of listSearch){
-      client.hget(SEARCH, element, function(err, results){
-        if (err) { 
-          next(err); 
-        } 
-        else {
-          if (results) {
-            client.smembers(results, function(err, results2){
+    client.hscan(SEARCH, 0, "match", "*" + element + "*", function(err, result){
+      if(err){
+        console.log(err);
+      }
+      if(result){
+        result = result[1];
+        counter += result.length/2 - 1;
+        if(result.length!=0){
+          for(var i=1; i<result.length; i+=2){
+            client.smembers(result[i], function(err, results2){
               if(results2){
                 objectKeys = objectKeys.concat(results2);
                 if(--counter==0)
@@ -578,17 +511,44 @@ app.get('/search', verifyRead, function(req, res, next){
                   searchFinish(req, res, next, objectKeys);
               }
             });
-          } else {
-            if(--counter==0)
-              searchFinish(req, res, next, objectKeys);
           }
         }
-      });
+        else if(counter==0)
+          searchFinish(req, res, next, objectKeys);
+      }
+    })
+    // client.hget(SEARCH, element, function(err, results){
+    //   if (err) { 
+    //     next(err); 
+    //   } 
+    //   else {
+    //     if (results) {
+    //       client.smembers(results, function(err, results2){
+    //         if(results2){
+    //           objectKeys = objectKeys.concat(results2);
+    //           if(--counter==0)
+    //             searchFinish(req, res, next, objectKeys);
+    //         }
+    //         else{
+    //           if(--counter==0)
+    //             searchFinish(req, res, next, objectKeys);
+    //         }
+    //       });
+    //     } else {
+    //       if(--counter==0)
+    //         searchFinish(req, res, next, objectKeys);
+    //     }
+    //   }
+    // });
   }
 });
 
 function searchFinish(req, res, next, objectKeys){
   // Sort array by number of duplicates, and remove duplicates
+  if(objectKeys.length==0){
+    res.json([]);
+    return;
+  }
   var map = objectKeys.reduce(function(p, c) {
     p[c] = (p[c] || 0) + 1;
     return p;
@@ -598,7 +558,41 @@ function searchFinish(req, res, next, objectKeys){
     return map[b] - map[a];
   });
 
-  res.json(objectKeys);
+  getNameAndImage(req, res, next, objectKeys);
+}
+
+function getNameAndImage(req, res, next, objectKeys){
+  var objects = [];
+  for(var i=0; i<objectKeys.length; i++){
+    (function(index){
+      client.hgetall(objectKeys[index], function(err, results){
+        if(err){
+          objects[index] = {key:objectKeys[index]}
+        }
+        else{
+          objects[index] = {
+            key: objectKeys[index], 
+            name: results[NAZIV],
+            image: results[getKeyOfImage(objectKeys[index])]
+          }
+        }
+        if(objects.length==objectKeys.length)
+          res.json(objects);
+      });
+    })(i);
+  }
+}
+
+function getKeyOfImage(objKey){
+  var category = allCategories[objKey.substring(0, objKey.indexOf('_'))];
+  if(category.hasImage){
+    for(let key of Object.keys(category)){
+      if(category[key]==IMAGE){
+        return key;
+      }
+    }
+  }
+  return null;
 }
 
 app.post('/login', (req, res) => {
