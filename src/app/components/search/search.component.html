@@ -4,6 +4,7 @@
       <section class="row justify-content-center">
         <select name="category" id="category" class="form-select-lg col-md-3">
           <option value='*'>Sve kategorije</option>
+          <option *ngFor="let category of categories" value="{{ category.key }}">{{ category.name }}</option>
         </select>
         <input formControlName="search" id="textSearch" type="text" class="form-select-lg col-md-4">
         <input id="btnSearch" type="submit" class="form-select-lg col-md-2" value="Pretraga">
@@ -17,12 +18,15 @@
           <div class="col-lg-12">
             <ul id="portfolio-flters">
               <li id= "li_*" data-filter="*" class="filter-active">Sve kategorije</li>
+              <li *ngFor="let category of categories"  id="{{'li_' + category.key}}">{{ category.name }}</li>
             </ul>
           </div>
         </div>
 
         <div id="itemsContainer" class="row portfolio-container" data-aos="fade-up" data-aos-easing="ease-in-out" data-aos-duration="500">
-
+          <div *ngFor="let item of results">
+            <app-search-item [item]="item"></app-search-item>
+          </div>
           
         </div>
 

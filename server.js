@@ -558,7 +558,8 @@ app.get('/search', verifyRead, function(req, res, next){
   var listSearch = URL.parse(req.url,true).query.search_query.toLowerCase().split(" ").filter(word => word.length > 1);
   var objectKeys = [];
   var counter = listSearch.length;
-
+  if(counter==0)
+    res.json([]);
   for(var element of listSearch){
       client.hget(SEARCH, element, function(err, results){
         if (err) { 

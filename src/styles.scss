@@ -890,13 +890,13 @@ body {
     line-height: 20px;
     color: #444;
     transition: all 0.3s ease-in-out;
-    border-bottom: 2px solid #fff;
+    border-bottom: 2px solid rgb(0, 0, 0);
     font-family: "Roboto", sans-serif;
   }
   
   .portfolio #portfolio-flters li:hover, .portfolio #portfolio-flters li.filter-active {
-    // border-color: #68A4C4;
-    // color: #68A4C4;
+    border-color: #ffffff;
+    color: #ffffff;
   }
   
   .portfolio .portfolio-item {

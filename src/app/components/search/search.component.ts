@@ -8,8 +8,9 @@ import { DataService } from '@app/_services';
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
-  form:any;
-  results:any = null;
+  form:FormGroup;
+  results:Array<string>;
+  categories:Array<any>;
 
   constructor(private dataService: DataService) { }
 
@@ -17,13 +18,16 @@ export class SearchComponent implements OnInit {
     this.form = new FormGroup({
       search: new FormControl('')
     });
+    this.dataService.getCategories().subscribe((results) => {
+      console.log(results);
+      this.categories = results;
+    });
   }
 
   search(){
-    console.log("Calling");
     this.dataService.search(this.form.getRawValue().search).subscribe((response) => {
       console.log(response);
-      console.log("Resp");
+      this.results = response;
     });
   }
 
