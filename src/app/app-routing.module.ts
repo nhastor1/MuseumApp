@@ -36,6 +36,12 @@ const routes: Routes = [
         data: { roles: [Role.Update, Role.Admin, Role.Read] }
     },
     {
+        path: 'details/:key',
+        component: DetailsComponent,
+        canActivate: [AuthGuard],
+        data: { roles: [Role.Update, Role.Admin, Role.Read] }
+    },
+    {
         path: 'admin',
         component: AdminComponent,
         canActivate: [AuthGuard],

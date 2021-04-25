@@ -1,0 +1,230 @@
+.component {
+    position: relative;
+    width: 200px;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    /* text-align: justify; */
+    background-color: #f3f3f3;
+    border-radius: 15px;
+    height: 300px;
+}
+
+.container-text {
+    width: 90%;
+    margin: auto;
+}
+
+    .container-text h4 {
+        margin-top: 5px;
+        margin-bottom: 0px;
+    }
+
+.front {
+    height: 100%;
+}
+
+.front-up {
+    height: 75%;
+    max-width: 95%;
+    margin: 0 auto;
+}
+
+    .front-up img {
+        max-height: 100%;
+    }
+
+.front-down {
+    height: 25%;
+}
+
+.overlay .up h4 {
+    text-decoration: underline;
+}
+
+// .grid-container {
+//     display: grid;
+//     grid-template-columns: repeat(4, 1fr);
+// }
+
+// #mainDiv {
+//     display: grid;
+// }
+
+#sectionBrand {
+    top: 30px;
+}
+
+    #sectionBrand img {
+        margin-bottom: 30px;
+    }
+
+.brand-description {
+    text-align: justify;
+}
+
+.image {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 16px;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    transition: .5s ease;
+    background-color: black;
+    text-align: justify;
+    border-radius: 15px;
+}
+
+.component:hover .overlay {
+    opacity: 0.75;
+}
+
+.component .outer {
+    opacity: 0;
+    top: 50%;
+}
+
+.component:hover .outer {
+    opacity: 1;
+    -webkit-transform: translate(0, -50%);
+    -moz-transform: translate(0, -50%);
+    transform: translate(0, -50%);
+    -webkit-transition: all 0.3s ease-in-out 0s;
+    -moz-transition: all 0.3s ease-in-out 0s;
+    transition: all 0.3s ease-in-out 0s;
+}
+
+.text {
+    font-size: 20px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.up, .down {
+    width: 90%;
+    margin: auto;
+}
+
+.up {
+    margin-top: 5%;
+    height: 55%;
+}
+
+.down {
+    height: 40%;
+}
+
+.component ul {
+    list-style-type: none;
+    margin: auto;
+    padding: 0px;
+    width: 80%;
+}
+
+    .component ul li i {
+        width: 10%;
+        margin-right: 10px;
+        margin-top: 10px;
+    }
+
+.mainContainer {
+    width: 100%;
+    margin: auto;
+    margin-bottom: 50px;
+    min-height: 700px;
+}
+
+.text-desc {
+    margin: 0px;
+    line-height: 0.2pt;
+}
+
+// @media (max-width: 1200px) {
+//     .grid-container {
+//         grid-template-columns: repeat(3, 1fr);
+//     }
+// }
+
+// @media (max-width: 1024px) {
+//     .grid-container {
+//         grid-template-columns: repeat(2, 1fr);
+//     }
+// }
+
+// @media (max-width: 768px) {
+//     .grid-container {
+//         grid-template-columns: repeat(2, 1fr);
+//     }
+// }
+
+// @media (max-width: 480px) {
+//     .grid-container {
+//         grid-template-columns: repeat(1, 1fr);
+//     }
+// }
+
+.outer-front {
+    display: table;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 95%;
+    max-height: 225px;
+    margin: 0 auto;
+}
+
+.outer {
+    display: table;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.middle {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.inner {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    /*whatever width you want*/
+}
+
+.component .ul-back div {
+    margin: 20px auto;
+    border-radius: 25px;
+    border: 2px solid white;
+    width: 80%;
+    height: 40px;
+    text-align: center;
+    color: white;
+    line-height: 35px;
+    color: white;
+}
+
+.component .ul-back i {
+    margin-right: 10px;
+}
+
+.component .ul-back span {
+    margin-bottom: 5px;
+}

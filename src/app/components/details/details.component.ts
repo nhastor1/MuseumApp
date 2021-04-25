@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { AuthenticationService, DataService, ToastrService } from '@app/_services';
 
 @Component({
@@ -9,6 +10,10 @@ import { AuthenticationService, DataService, ToastrService } from '@app/_service
 })
 export class DetailsComponent implements OnInit {
   form: FormGroup = new FormGroup({});
+  searchForm: FormGroup = new FormGroup({
+    category: new FormControl(),
+    key: new FormControl()
+  });
 
   createForm;
   categories = [];
@@ -17,15 +22,31 @@ export class DetailsComponent implements OnInit {
   currentCategoryKey = null;
   currentDataKey = null;
   loading = false;
+  first = true;
 
-  constructor(public authService: AuthenticationService, 
+  constructor(public authService: AuthenticationService, private route: ActivatedRoute,
     private dataService: DataService, private formBuilder: FormBuilder,
     private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.dataService.getCategories().subscribe((results) => {
       this.categories = results;
-      this.onChangeCategory(results[0].key);
+      this.currentDataKey = this.route.snapshot.params['key'];
+      let tempCatKey = undefined;
+      if(this.currentDataKey != undefined)
+        tempCatKey = this.currentDataKey.substring(0, this.currentDataKey.indexOf('_'));
+      if(this.currentDataKey!=undefined && results.map(a => a.key).includes(tempCatKey)){
+        console.log("DA");
+        this.searchForm.get('category').setValue(tempCatKey);
+        this.currentCategory = tempCatKey;
+        this.onChangeCategory(tempCatKey);
+      }
+      else{
+        console.log("NE");
+        this.first = false;
+        this.searchForm.get('category').setValue(results[0].key);
+        this.onChangeCategory(results[0].key);
+      }
     });
   }
 
@@ -33,13 +54,20 @@ export class DetailsComponent implements OnInit {
     this.currentCategoryKey = value;
     this.dataService.getCategory(value).subscribe((results) => {
       this.currentCategory = results;
-
       this.setForm(results, null);
     });
     this.dataService.getCodes(value).subscribe((results) => {
-      //console.log(results);
       this.codes = results;
-      this.onChangeCode(results[0]);
+      console.log(results);
+      if(this.first && results.includes(this.currentDataKey)){
+        this.first = false;
+        this.searchForm.get('key').setValue(this.currentDataKey);
+        this.onChangeCode(this.currentDataKey);
+      }
+      else{
+        this.searchForm.get('key').setValue(results[0]);
+        this.onChangeCode(results[0]);
+      }
     })
   }
   
@@ -62,6 +90,7 @@ export class DetailsComponent implements OnInit {
         this.toastr.success("Data edited");
       },
       (error) => {
+        this.loading = false;
         this.toastr.error(error.message);
       });
   }

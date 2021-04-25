@@ -4,3 +4,4 @@ npm install express path body-parser redis busboy random-key url bcrypt jsonwebt
 Angular:
 npm install --save jquery
 npm install --save toastr
+npm install --save bootstrap

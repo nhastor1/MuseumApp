@@ -8,19 +8,19 @@ import { DataService } from '@app/_services';
 })
 export class SearchItemComponent implements OnInit {
   @Input() item:any;
+  @Input() filter:string;
   source:any;
   constructor(private dataService: DataService) { }
 
   ngOnInit(): void {
-    console.log(this.item);
     this.source = "assets/images/no_image.svg.png";
     if(this.item.image){
       this.dataService.getFile('image', this.item.image).subscribe((data) => this.source = data);
     }
   }
 
-  getFilter(key){
-    return ".filter-" + key;
+  useFilter(){
+    return this.filter=="*" || this.item.key.startsWith(this.filter);
   }
 
 }
