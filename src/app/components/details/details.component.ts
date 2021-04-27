@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService, DataService, ToastrService } from '@app/_services';
 
 @Component({
@@ -26,7 +26,7 @@ export class DetailsComponent implements OnInit {
 
   constructor(public authService: AuthenticationService, private route: ActivatedRoute,
     private dataService: DataService, private formBuilder: FormBuilder,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService, private router: Router) { }
 
   ngOnInit(): void {
     this.dataService.getCategories().subscribe((results) => {
@@ -35,15 +35,12 @@ export class DetailsComponent implements OnInit {
       let tempCatKey = undefined;
       if(this.currentDataKey != undefined)
         tempCatKey = this.currentDataKey.substring(0, this.currentDataKey.indexOf('_'));
-      if(this.currentDataKey!=undefined && results.map(a => a.key).includes(tempCatKey)){
-        console.log("DA");
+      if(results.map(a => a.key).includes(tempCatKey)){
         this.searchForm.get('category').setValue(tempCatKey);
         this.currentCategory = tempCatKey;
         this.onChangeCategory(tempCatKey);
       }
       else{
-        console.log("NE");
-        this.first = false;
         this.searchForm.get('category').setValue(results[0].key);
         this.onChangeCategory(results[0].key);
       }
@@ -58,11 +55,20 @@ export class DetailsComponent implements OnInit {
     });
     this.dataService.getCodes(value).subscribe((results) => {
       this.codes = results;
-      console.log(results);
-      if(this.first && results.includes(this.currentDataKey)){
-        this.first = false;
-        this.searchForm.get('key').setValue(this.currentDataKey);
-        this.onChangeCode(this.currentDataKey);
+      if(this.first){
+        // First time and correct path
+        if(results.includes(this.currentDataKey)){
+          this.first = false;
+          this.searchForm.get('key').setValue(this.currentDataKey);
+          this.onChangeCode(this.currentDataKey);
+        }
+        // First time and incorrect path
+        else{
+          this.first = false;
+          this.router.navigate(['details', results[0]]);
+          this.searchForm.get('key').setValue(results[0]);
+          this.onChangeCode(results[0]);
+        }
       }
       else{
         this.searchForm.get('key').setValue(results[0]);
@@ -72,7 +78,6 @@ export class DetailsComponent implements OnInit {
   }
   
   onChangeCode(value){
-    console.log(value);
     this.currentDataKey = value;
     this.dataService.getData(value).subscribe((results) => {
       console.log(results);
@@ -106,11 +111,6 @@ export class DetailsComponent implements OnInit {
         obj[res.name] = [''];
     console.log(obj);
     this.form = this.formBuilder.group(obj);
-    // if(data)
-    //   //this.form.setValue(data);
-    //   this.form = this.formBuilder.group(data);
-    // else
-    //   this.form = this.formBuilder.group(obj);
   }
   
 }

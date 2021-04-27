@@ -45,6 +45,7 @@ export class CreateComponent implements OnInit {
         this.toastr.success("Data added");
       },
       (error) => {
+        this.loading = false;
         this.toastr.error(error.message);
       });
   }
