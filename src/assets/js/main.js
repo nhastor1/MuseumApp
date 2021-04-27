@@ -141,30 +141,31 @@
   /**
    * Testimonials slider
    */
-  new Swiper('.testimonials-carousel', {
-    speed: 400,
-    loop: true,
-    autoplay: {
-      delay: 5000,
-      disableOnInteraction: false
-    },
-    pagination: {
-      el: '.swiper-pagination',
-      type: 'bullets',
-      clickable: true
-    }
-  });
+  // new Swiper('.testimonials-carousel', {
+  //   speed: 400,
+  //   loop: true,
+  //   autoplay: {
+  //     delay: 5000,
+  //     disableOnInteraction: false
+  //   },
+  //   pagination: {
+  //     el: '.swiper-pagination',
+  //     type: 'bullets',
+  //     clickable: true
+  //   }
+  // });
 
   /**
    * Porfolio isotope and filter
    */
   window.addEventListener('load', () => {
     let portfolioContainer = select('.portfolio-container');
+    console.log
     if (portfolioContainer) {
-      let portfolioIsotope = new Isotope(portfolioContainer, {
-        itemSelector: '.portfolio-wrap',
-        layoutMode: 'fitRows'
-      });
+      // let portfolioIsotope = new Isotope(portfolioContainer, {
+      //   itemSelector: '.portfolio-wrap',
+      //   layoutMode: 'fitRows'
+      // });
 
       let portfolioFilters = select('#portfolio-flters li', true);
 
@@ -175,12 +176,12 @@
         });
         this.classList.add('filter-active');
 
-        portfolioIsotope.arrange({
-          filter: this.getAttribute('data-filter')
-        });
-        portfolioIsotope.on('arrangeComplete', function() {
-          AOS.refresh()
-        });
+        // portfolioIsotope.arrange({
+        //   filter: this.getAttribute('data-filter')
+        // });
+        // portfolioIsotope.on('arrangeComplete', function() {
+        //   AOS.refresh()
+        // });
       }, true);
     }
 
@@ -189,13 +190,13 @@
   /**
    * Animation on scroll
    */
-  window.addEventListener('load', () => {
-    AOS.init({
-      duration: 1000,
-      easing: "ease-in-out",
-      once: true,
-      mirror: false
-    });
-  });
+  // window.addEventListener('load', () => {
+  //   AOS.init({
+  //     duration: 1000,
+  //     easing: "ease-in-out",
+  //     once: true,
+  //     mirror: false
+  //   });
+  // });
 
 })()
