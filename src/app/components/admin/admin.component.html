@@ -19,7 +19,7 @@
                     <td>{{user.firstname}}</td>
                     <td>{{user.lastname}}</td>
                     <td>{{user.role}}</td>
-                    <td><button class="btn btn-primary" routerLink="/user/edit/{{user.username}}"><fa-icon [icon]="faEdit"></fa-icon></button></td>
+                    <td><button class="btn btn-primary" routerLink="/users/{{user.username}}"><fa-icon [icon]="faEdit"></fa-icon></button></td>
                     <td><button class="btn btn-danger" (click)="deleteUser(user.username)"><fa-icon [icon]="faDelete"></fa-icon></button></td>
                 </tr>
             </tbody>
@@ -27,5 +27,5 @@
     </div>
 </div>
 <div class="d-flex flex-row-reverse margin-top-20">
-    <button class="btn btn-success" routerLink="/user/create"><fa-icon [icon]="faPlus"></fa-icon> Add new user</button>
+    <button class="btn btn-success" routerLink="/users/create"><fa-icon [icon]="faPlus"></fa-icon> Add new user</button>
 </div>

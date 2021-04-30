@@ -10,6 +10,7 @@ import { CreateComponent } from './components/create/create.component';
 import { DetailsComponent } from './components/details/details.component';
 import { SearchComponent } from './components/search/search.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
+import { UserComponent } from './components/user/user.component';
 
 const routes: Routes = [
     {
@@ -42,7 +43,7 @@ const routes: Routes = [
         data: { roles: [Role.Update, Role.Admin, Role.Read] }
     },
     {
-        path: 'admin',
+        path: 'users',
         component: AdminComponent,
         canActivate: [AuthGuard],
         data: { roles: [Role.Admin] }
@@ -54,6 +55,24 @@ const routes: Routes = [
     {
         path: 'changePassword',
         component: ChangePasswordComponent,
+        canActivate: [AuthGuard],
+        data: { roles: [Role.Update, Role.Admin, Role.Read] }
+    },
+    {
+        path: 'users/create',
+        component: UserComponent,
+        canActivate: [AuthGuard],
+        data: { roles: [Role.Admin] }
+    },
+    {
+        path: 'users/:username',
+        component: UserComponent,
+        canActivate: [AuthGuard],
+        data: { roles: [Role.Admin] }
+    },
+    {
+        path: 'profile',
+        component: UserComponent,
         canActivate: [AuthGuard],
         data: { roles: [Role.Update, Role.Admin, Role.Read] }
     },

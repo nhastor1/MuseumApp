@@ -701,6 +701,46 @@ app.get('/users', verifyAdmin, function(req, res){
   });
 });
 
+app.delete('/users/:username', verifyAdmin, function(req, res){
+  client.hgetall("user:" + req.params.username, function(err, result){
+    if(result.role == ROLES[0])
+      res.json({error: "Can not delete user with admin role"});
+    else{
+      client.del("user:" + req.params.username, function(err, results){
+        if(err)
+          res.json({error: "Unknown error"});
+        else if(results == "1")
+          res.json({message: req.params.username + " succefully deleted"});
+        else 
+          res.json({error: "No such username"})
+      });
+    }
+  })
+});
+
+app.post('/users', verifyAdmin, function(req, res){
+  let user = req.body;
+  if(ROLES.indexOf(user.role) == -1)
+    res.json({error: "Role not defined"});
+  client.hgetall('user:' + user.username, function (err, result){
+    if(result!=null)
+      res.json({error: "There is already user with same username"});
+    else{
+      bcrypt.hash(user.password, saltRounds, function(err, hash) {
+        client.hmset('user:' + user.username, [
+          USERNAME, user.username,
+          FIRSTNAME, user.firstname,
+          LASTNAME, user.lastname,
+          ROLE, user.role,
+          PASSWORD, hash
+        ], function (err, result){
+          res.json({message: "User succefully created"});
+        });
+      });
+    }
+  });
+});
+
 app.get('/logout',(req,res) => {
   destroySession(req, res);
 });

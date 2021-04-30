@@ -1,1 +1,59 @@
-<p>user works!</p>
+<main id="main">
+    <section id="contact" class="contact" style="margin-top: 100px;">
+        <div class="container" data-aos="fade-up">
+      
+          <div class="section-title">
+              <h2>Unesite podatke o profilu</h2>
+          </div>
+      
+          <div class="row d-flex justify-content-center">
+              <div class="col-lg-7 mt-5 mt-lg-0 d-flex align-items-stretch">
+                  <form class="php-email-form roundCorners" id="form" [formGroup]="myForm" (ngSubmit)="create()">
+                      <div class="form-group">
+                        <div>
+                          <label for="username">Username</label>
+                          <input class="form-control" type="text" formControlName="username" name="username" id="username">
+                        </div>
+    
+                        <div>
+                          <label for="firstname">First name</label>
+                          <input class="form-control" type="text" formControlName="firstname" name="firstname" id="firstname">  
+                        </div>
+      
+                        <div>
+                          <label for="lastname">Last Name</label>
+                          <input class="form-control" type="text" formControlName="lastname" name="lastname" id="lastname">  
+                        </div>
+
+                        <div [ngClass]="{'error': !validPassword()}">
+                            <label for="password">Password</label>
+                            <em *ngIf="!validPassword()">Minimum 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character</em>
+                            <input class="form-control" type="password" formControlName="password" name="password" id="password">  
+                        </div>
+
+                        <div>
+                            <label for="role">Role</label>
+                            <select class="form-control" type="text" formControlName="role" name="role" id="role">
+                                <option value="Read">Read</option>
+                                <option value="Update">Update</option>
+                                <option value="Admin">Admin</option>
+                            </select>
+                        </div>
+                      </div>
+                      <div class="text-center">
+                        <button class="btn btn-primary" type="submit" id="subBtn" [disabled]="!validForm()">
+                          <div *ngIf="loading">
+                            <span id="loadSpan" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                          </div>
+                          <div *ngIf="!loading">Create account</div>
+                        </button>
+                      </div>
+                      
+                  </form>
+              </div>
+          </div>
+      
+        </div>
+      </section>
+      
+    </main>

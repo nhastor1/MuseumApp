@@ -23,9 +23,9 @@ export class HomeComponent {
 
     ngOnInit() {
         this.loading = true;
-        this.userService.getApi().pipe(first()).subscribe(a => {
-            this.loading = false;
-        });
+        // this.userService.getApi().pipe(first()).subscribe(a => {
+        //     this.loading = false;
+        // });
         // this.userService.getById(this.user.id).pipe(first()).subscribe(user => {
         //     this.loading = false;
         //     this.userFromApi = user;
