@@ -49,6 +49,8 @@ const EDIT = 'edit';
 
 const USERNAME = 'username';
 const PASSWORD = 'password';
+const FIRSTNAME = 'firstname';
+const LASTNAME = 'lastname';
 const ROLE = 'role';
 const ROLES = ['Admin', 'Update', 'Read'];
 const FILES = [VIDEO, IMAGE, AUDIO];
@@ -116,6 +118,8 @@ function renewDatabase(){
   bcrypt.hash('admin', saltRounds, function(err, hash) {
     client.hmset('user:admin', [
       USERNAME, 'admin',
+      FIRSTNAME, 'Admin',
+      LASTNAME, 'Adminović',
       ROLE, ROLES[0],
       PASSWORD, hash
     ]);
@@ -124,6 +128,8 @@ function renewDatabase(){
   bcrypt.hash('read', saltRounds, function(err, hash) {
     client.hmset('user:read', [
       USERNAME, 'read',
+      FIRSTNAME, 'Read',
+      LASTNAME, 'Readić',
       ROLE, ROLES[2],
       PASSWORD, hash
     ]);
@@ -132,6 +138,8 @@ function renewDatabase(){
   bcrypt.hash('update', saltRounds, function(err, hash) {
     client.hmset('user:update', [
       USERNAME, 'update',
+      FIRSTNAME, 'Update',
+      LASTNAME, 'Updatić',
       ROLE, ROLES[1],
       PASSWORD, hash
     ]);
@@ -677,17 +685,33 @@ app.put('/account/changePassword', verifyRead, function(req, res){
   });
 });
 
+// Admin
+
+app.get('/users', verifyAdmin, function(req, res){
+  client.keys("user:*", function(err, results){
+    let users = []
+    for(let key of results){
+      client.hgetall(key, function(err, results2){
+        delete results2.password;
+        users.push(results2);
+        if(users.length == results.length)
+          res.json(users);
+      })
+    }
+  });
+});
+
 app.get('/logout',(req,res) => {
   destroySession(req, res);
 });
 
-app.get('/team.html/:objectId', function(req,res){
-  req.params.objectId
-});
+// app.get('/team.html/:objectId', function(req,res){
+//   req.params.objectId
+// });
 
-app.get('/updateAllow', verifyUpdate, (req, res) => {  
-  res.sendStatus(200);
-});
+// app.get('/updateAllow', verifyUpdate, (req, res) => {  
+//   res.sendStatus(200);
+// });
 
 // FORMAT OF TOKEN
 // Authorization: Bearer <access_token>

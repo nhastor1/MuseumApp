@@ -5,3 +5,4 @@ Angular:
 npm install --save jquery
 npm install --save toastr
 npm install --save bootstrap
+ng add @fortawesome/angular-fontawesome@0.7.x

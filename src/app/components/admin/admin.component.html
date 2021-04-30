@@ -1,11 +1,31 @@
 ﻿<div class="card mt-4">
-    <h4 class="card-header">Admin</h4>
-    <div class="card-body">
-        <p>This page can be accessed <u>only by administrators</u>.</p>
-        <p class="mb-1">All users from secure (admin only) api end point:</p>
+    <h4 class="card-header d-flex justify-content-center">User list</h4>
+    <div>
         <div *ngIf="loading" class="spinner-border spinner-border-sm"></div>
-        <!-- <ul *ngIf="users">
-            <li *ngFor="let user of users">{{user.firstName}} {{user.lastName}}</li>
-        </ul> -->
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Role</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of users">
+                    <td>{{user.username}}</td>
+                    <td>{{user.firstname}}</td>
+                    <td>{{user.lastname}}</td>
+                    <td>{{user.role}}</td>
+                    <td><button class="btn btn-primary" routerLink="/user/edit/{{user.username}}"><fa-icon [icon]="faEdit"></fa-icon></button></td>
+                    <td><button class="btn btn-danger" (click)="deleteUser(user.username)"><fa-icon [icon]="faDelete"></fa-icon></button></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
+</div>
+<div class="d-flex flex-row-reverse margin-top-20">
+    <button class="btn btn-success" routerLink="/user/create"><fa-icon [icon]="faPlus"></fa-icon> Add new user</button>
 </div>

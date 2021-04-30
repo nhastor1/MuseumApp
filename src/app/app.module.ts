@@ -20,15 +20,17 @@ import { DetailsComponent } from './components/details/details.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
 import { InputComponent } from './components/input/input.component';
 import { MediaComponent } from './components/media/media.component';
-import { ToastrService } from './_services';;
-import { SearchItemComponent } from './components/search-item/search-item.component'
+import { AuthenticationService, ToastrService, UserService } from './_services';;
+import { SearchItemComponent } from './components/search-item/search-item.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { UserComponent } from './components/user/user.component';
 @NgModule({
     imports: [
         BrowserModule,
         ReactiveFormsModule,
         HttpClientModule,
-        AppRoutingModule
-    ],
+        AppRoutingModule,
+        FontAwesomeModule],
     declarations: [
         AppComponent,
         HomeComponent,
@@ -41,10 +43,13 @@ import { SearchItemComponent } from './components/search-item/search-item.compon
         ChangePasswordComponent,
         InputComponent,
         MediaComponent,
-        SearchItemComponent],
+        SearchItemComponent,
+        UserComponent],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-        ToastrService
+        AuthenticationService,
+        ToastrService,
+        UserService
         // provider used to create fake backend
         //fakeBackendProvider
     ],
