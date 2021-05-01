@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ToastrService, UserService } from '@app/_services';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthenticationService, ToastrService, UserService } from '@app/_services';
 
 @Component({
   selector: 'app-user',
@@ -8,21 +9,52 @@ import { ToastrService, UserService } from '@app/_services';
   styleUrls: ['./user.component.scss']
 })
 export class UserComponent implements OnInit {
-  myForm:any = new FormGroup({
+  myForm:FormGroup = new FormGroup({
     username: new FormControl('', Validators.required),
     firstname: new FormControl('', Validators.required),
     lastname: new FormControl('', Validators.required),
-    password: new FormControl('', Validators.required),
     role: new FormControl('Read', Validators.required),
   });
   loading = false;
+  username;
+  isCreate = false;
+  isProfile = false;
 
   // Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character:
   passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-  constructor(private userService: UserService, private toastr: ToastrService) { }
+  constructor(private userService: UserService, private toastr: ToastrService,
+    private route: ActivatedRoute, private router: Router,
+    private authService: AuthenticationService) { }
 
   ngOnInit(): void {
+    this.username = this.route.snapshot.params['username'];
+    let routePath = this.route.snapshot.routeConfig.path;
+    if(routePath == 'users/create'){
+      this.isCreate = true;
+      this.myForm.addControl('password', new FormControl('', Validators.required));
+    }
+    else if(routePath == 'profile'){
+      this.isProfile = true;
+      let user = this.authService.userValue;
+      this.myForm.setValue({
+        username: user.username,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        role: user.role
+      });
+    }
+
+    if(this.username!=undefined){
+      this.userService.getUser(this.username).subscribe((user) => {
+        if(user.error)
+          this.router.navigate(['profile']);
+        else{
+          console.log(user);
+          this.myForm.setValue(user);
+        }
+      })
+    }
   }
 
   create(){
@@ -43,7 +75,7 @@ export class UserComponent implements OnInit {
   }
 
   validForm(){
-    return this.myForm.valid && this.validPassword();
+    return this.myForm.valid && (!this.isCreate || this.validPassword());
   }
 
 }

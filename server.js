@@ -610,13 +610,14 @@ app.post('/login', (req, res) => {
 
   client.hgetall('user:' + user.username, function(err, results){
     if(results){
-      user.role = results.role;
+      user = results;
       bcrypt.compare(req.body.password, results.password, function(err, result) {
         if(result){
           jwt.sign({user}, SECRETKEY, { expiresIn: TOKEN_TIME + 'ms' }, (err, shortToken) => {
             jwt.sign({user}, SECRETKEY, { expiresIn: (2*TOKEN_TIME) + 'ms' }, (err, longToken) => {
               // req.session.token = longToken;
               // req.session.token.expires = 2*TOKEN_TIME;
+              delete user.password;
               user.token = shortToken;
               user.renewableToken = longToken;
               res.json(user);
@@ -701,6 +702,17 @@ app.get('/users', verifyAdmin, function(req, res){
   });
 });
 
+app.get('/users/:username', verifyAdmin, function(req, res){
+  client.hgetall("user:" + req.params.username, function(err, results){
+    if(!results)
+      res.json({error: "No such username"});
+    else{
+      delete results.password;
+      res.json(results);
+    }
+  });
+});
+
 app.delete('/users/:username', verifyAdmin, function(req, res){
   client.hgetall("user:" + req.params.username, function(err, result){
     if(result.role == ROLES[0])
@@ -744,14 +756,6 @@ app.post('/users', verifyAdmin, function(req, res){
 app.get('/logout',(req,res) => {
   destroySession(req, res);
 });
-
-// app.get('/team.html/:objectId', function(req,res){
-//   req.params.objectId
-// });
-
-// app.get('/updateAllow', verifyUpdate, (req, res) => {  
-//   res.sendStatus(200);
-// });
 
 // FORMAT OF TOKEN
 // Authorization: Bearer <access_token>

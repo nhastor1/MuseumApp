@@ -1,4 +1,4 @@
-<main id="main">
+<main id="main" [routerLink]="['/users', username]">
     <section id="contact" class="contact" style="margin-top: 100px;">
         <div class="container" data-aos="fade-up">
       
@@ -25,7 +25,7 @@
                           <input class="form-control" type="text" formControlName="lastname" name="lastname" id="lastname">  
                         </div>
 
-                        <div [ngClass]="{'error': !validPassword()}">
+                        <div *ngIf="isCreate" [ngClass]="{'error': !validPassword()}">
                             <label for="password">Password</label>
                             <em *ngIf="!validPassword()">Minimum 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character</em>
                             <input class="form-control" type="password" formControlName="password" name="password" id="password">  
@@ -41,11 +41,12 @@
                         </div>
                       </div>
                       <div class="text-center">
-                        <button class="btn btn-primary" type="submit" id="subBtn" [disabled]="!validForm()">
+                        <button *ngIf="!isProfile" class="btn btn-primary" type="submit" id="subBtn" [disabled]="!validForm()">
                           <div *ngIf="loading">
                             <span id="loadSpan" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                           </div>
-                          <div *ngIf="!loading">Create account</div>
+                          <div *ngIf="!loading && isCreate">Create account</div>
+                          <div *ngIf="!loading && !isCreate">Save account</div>
                         </button>
                       </div>
                       
