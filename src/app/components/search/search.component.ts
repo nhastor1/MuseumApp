@@ -20,6 +20,7 @@ export class SearchComponent implements OnInit {
       search: new FormControl(localStorage.getItem('searchText'))
     });
     this.results = JSON.parse(localStorage.getItem('searchResponse'));
+    console.log(this.results)
     this.dataService.getCategories().subscribe((results) => {
       console.log(results);
       this.categories = results;

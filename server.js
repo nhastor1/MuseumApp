@@ -753,6 +753,26 @@ app.post('/users', verifyAdmin, function(req, res){
   });
 });
 
+app.put('/users/:username', verifyAdmin, function(req, res){
+  let user = req.body;
+  if(ROLES.indexOf(user.role) == -1)
+    res.json({error: "Role not defined"});
+  client.hgetall('user:' + user.username, function (err, result){
+    if(result==null)
+      res.json({error: "There is no user with this username"});
+    else{
+      client.hmset('user:' + user.username, [
+        USERNAME, user.username,
+        FIRSTNAME, user.firstname,
+        LASTNAME, user.lastname,
+        ROLE, user.role,
+      ], function (err, result){
+        res.json({message: "User succefully edited"});
+      });
+    }
+  });
+});
+
 app.get('/logout',(req,res) => {
   destroySession(req, res);
 });

@@ -1,4 +1,4 @@
-<main id="main" [routerLink]="['/users', username]">
+<main id="main">
     <section id="contact" class="contact" style="margin-top: 100px;">
         <div class="container" data-aos="fade-up">
       
@@ -8,21 +8,21 @@
       
           <div class="row d-flex justify-content-center">
               <div class="col-lg-7 mt-5 mt-lg-0 d-flex align-items-stretch">
-                  <form class="php-email-form roundCorners" id="form" [formGroup]="myForm" (ngSubmit)="create()">
+                  <form class="php-email-form roundCorners" id="form" [formGroup]="myForm" (ngSubmit)="save()">
                       <div class="form-group">
                         <div>
                           <label for="username">Username</label>
-                          <input class="form-control" type="text" formControlName="username" name="username" id="username">
+                          <input class="form-control" type="text" formControlName="username" name="username" id="username" [attr.disabled]="isCreate ? null : ''">
                         </div>
     
                         <div>
                           <label for="firstname">First name</label>
-                          <input class="form-control" type="text" formControlName="firstname" name="firstname" id="firstname">  
+                          <input class="form-control" type="text" formControlName="firstname" name="firstname" id="firstname" [attr.disabled]="isProfile ? '' : null">  
                         </div>
       
                         <div>
                           <label for="lastname">Last Name</label>
-                          <input class="form-control" type="text" formControlName="lastname" name="lastname" id="lastname">  
+                          <input class="form-control" type="text" formControlName="lastname" name="lastname" id="lastname" [attr.disabled]="isProfile ? '' : null">  
                         </div>
 
                         <div *ngIf="isCreate" [ngClass]="{'error': !validPassword()}">
@@ -33,7 +33,7 @@
 
                         <div>
                             <label for="role">Role</label>
-                            <select class="form-control" type="text" formControlName="role" name="role" id="role">
+                            <select class="form-control" type="text" formControlName="role" name="role" id="role" [attr.disabled]="isProfile ? '' : null">
                                 <option value="Read">Read</option>
                                 <option value="Update">Update</option>
                                 <option value="Admin">Admin</option>

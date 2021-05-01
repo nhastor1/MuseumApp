@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthenticationService, DataService, ToastrService } from '@app/_services';
 
 @Component({
@@ -18,7 +19,7 @@ export class CreateComponent implements OnInit {
 
   constructor(private authService: AuthenticationService, 
     private dataService: DataService, private formBuilder: FormBuilder,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService, private router: Router) { }
 
   ngOnInit(): void {
     this.dataService.getCategories().subscribe((results) => {
@@ -43,6 +44,7 @@ export class CreateComponent implements OnInit {
         console.log(response);
         this.loading = false;
         this.toastr.success("Data added");
+        this.router.navigate(['details', response]);
       },
       (error) => {
         this.loading = false;

@@ -28,7 +28,13 @@ export class UserService {
     }
 
     createUser(user){
-        return this.http.post<any>(`${environment.apiUrl}/users/`, JSON.stringify(user), { headers: new HttpHeaders({
+        return this.http.post<any>(`${environment.apiUrl}/users`, JSON.stringify(user), { headers: new HttpHeaders({
+            'Content-Type':  'application/json; charset=utf-8'
+          })});
+    }
+
+    editUser(user){
+        return this.http.put<any>(`${environment.apiUrl}/users/${user.username}`, JSON.stringify(user), { headers: new HttpHeaders({
             'Content-Type':  'application/json; charset=utf-8'
           })});
     }

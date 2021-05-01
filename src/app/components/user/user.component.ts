@@ -57,17 +57,37 @@ export class UserComponent implements OnInit {
     }
   }
 
-  create(){
-    this.loading = true;
-    console.log(this.myForm.getRawValue());
-    this.userService.createUser(this.myForm.getRawValue()).subscribe((response) => {
-      this.loading = false;
-      console.log(response);
-      if(response.error)
-        this.toastr.error(response.error);
-      else if(response.message)
-        this.toastr.success(response.message);
-    });
+  save(){
+    let rawForm = this.myForm.getRawValue();
+    if(this.isCreate){
+      this.loading = true;
+      this.userService.createUser(rawForm).subscribe((response) => {
+        this.loading = false;
+        console.log(response);
+        if(response.error)
+          this.toastr.error(response.error);
+        else if(response.message){
+          this.toastr.success(response.message);
+          this.router.navigate(['users', rawForm.username]);
+        }
+      });
+    }
+    else if(!this.isProfile){
+      this.loading = true;
+      this.userService.editUser(rawForm).subscribe((response) => {
+        this.loading = false;
+        console.log(response);
+        if(response.error)
+          this.toastr.error(response.error);
+        else if(response.message)
+          this.toastr.success(response.message);
+      });
+    }
+    
+  }
+
+  saveUser(){
+
   }
 
   validPassword(){
@@ -77,5 +97,4 @@ export class UserComponent implements OnInit {
   validForm(){
     return this.myForm.valid && (!this.isCreate || this.validPassword());
   }
-
 }

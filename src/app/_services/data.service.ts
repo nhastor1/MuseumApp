@@ -57,7 +57,7 @@ export class DataService{
                     if(response.error)
                         reject({message:"Can not add data"});
                     if(fileNumber==0)
-                        resolve({message: "Data added"});
+                        resolve(response.objKey);
                     else{
                         for(var row of category){
                             if(this.fileList.isFile(row.type)){
@@ -66,7 +66,7 @@ export class DataService{
                                 this.http.post<any>(`${environment.apiUrl}/file/${response.data[row.name]}`, formData).subscribe((data) => {
                                         fileNumber--;
                                         if(fileNumber==0)
-                                            resolve({message: "Data added"});
+                                            resolve(response.objKey);
                                     })
                             }
                         }
