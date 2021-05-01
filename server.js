@@ -44,6 +44,9 @@ const DATE = 'date';
 const IMAGE = 'image';
 const VIDEO = 'video';
 const AUDIO = 'audio';
+const DROPDOWN = 'dropdown';
+const CHECKBOX = 'checkbox';
+const RADIOBUTTONS = 'radiobuttons';
 const CREATE = 'create';
 const EDIT = 'edit';
 
@@ -88,6 +91,17 @@ function getCategories(){
 
 function renewDatabase(){
   var enterCategories = [];
+  // dropdown list and radio buttons
+  client.sadd(DROPDOWN + ":" + categories[0].key + "_" + "Starost", [
+    "Bas staro", "Srednje staro", "Novo"
+  ]);
+
+  client.sadd(RADIOBUTTONS + ":" + categories[0].key + "_" + "Stoljece", [
+    "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"
+  ]);
+
+
+  // categories
   for(var i=0; i<categories.length; i++){
     enterCategories.push('name' + i, categories[i].name,
       'key' + i, categories[i].key);
@@ -102,6 +116,9 @@ function renewDatabase(){
     else if (i==0)
     client.hmset(categories[i].key, [
       NAZIV, STRING,
+      'Stoljece', RADIOBUTTONS,
+      'Pne', CHECKBOX,
+      'Starost', DROPDOWN,
       'Video', VIDEO
     ]);
     else
@@ -194,6 +211,16 @@ app.get('/category', verifyRead, function(req,res){
         }
         res.json(array);
       }
+  });
+});
+
+app.get('/list', verifyRead, function(req, res){
+  let url = URL.parse(req.url,true).query;
+  client.smembers(url.type + ":" + url.category + "_" + url.name, function(err, results){
+    if(err || !results || results.length == 0)
+      res.json({error: "No such data"});
+    else
+      res.json(results);
   });
 });
 
@@ -494,6 +521,7 @@ function deleteSearch(text, objKey){
 // HSCAN search 0 match *ourWord*
 app.get('/search', verifyRead, function(req, res, next){
   var listSearch = URL.parse(req.url,true).query.search_query.toLowerCase().split(" ").filter(word => word.length > 1);
+  //let url = new URL(req.protocol + '://' + req.get('host') + req.originalUrl);
   var objectKeys = [];
   var counter = listSearch.length;
   if(counter==0)

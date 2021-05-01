@@ -23,4 +23,13 @@
             <app-media [audio]="form.get(field.name)"></app-media>
         </div>
     </div>
+    <div *ngSwitchCase="'dropdown'">
+
+    </div>
+    <div *ngSwitchCase="'checkbox'">
+        <input type="checkbox" id="{{ field.name }}" name="{{ field.name }}" value="{{ field.name }}">
+    </div>
+    <div *ngSwitchCase="'radiobuttons'">
+
+    </div>
 </div>
