@@ -39,6 +39,10 @@ export class DataService{
         return this.http.get<any>(`${environment.apiUrl}/search?search_query=${text}`);
     }
 
+    getList(type, category, name){
+        return this.http.get<any>(`${environment.apiUrl}/list?type=${type}&category=${category}&name=${name}`);
+    }
+
     getFile(type, key){
         type = "file";
         console.log(`${environment.apiUrl}/${type}/${key}`)

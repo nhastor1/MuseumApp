@@ -33,7 +33,7 @@
                   <form [formGroup]="form" (ngSubmit)="saveData()" >
   
                     <div *ngFor="let field of currentCategory" class="form-group">
-                      <app-input [field]="field" [form]="form"></app-input>
+                      <app-input [field]="field" [form]="form" [category]="currentCategoryKey"></app-input>
                     </div>
   
                     <div class="mb-3">

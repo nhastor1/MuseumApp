@@ -38,6 +38,7 @@ app.use(session({secret: SECRETKEY}));
 // Initialize database
 // Keywords
 const STRING = 'text';
+const TEXTAREA = 'text-area';
 const INTEGER = 'number';
 const DATE_TIME = 'datetime-local';
 const DATE = 'date';
@@ -119,6 +120,7 @@ function renewDatabase(){
       'Stoljece', RADIOBUTTONS,
       'Pne', CHECKBOX,
       'Starost', DROPDOWN,
+      'Opis', TEXTAREA,
       'Video', VIDEO
     ]);
     else

@@ -6,3 +6,5 @@ npm install --save jquery
 npm install --save toastr
 npm install --save bootstrap
 ng add @fortawesome/angular-fontawesome@0.7.x
+npm install --save @angular/material @angular/animations @angular/cdk
+npm install --save angular/material2-builds angular/cdk-builds

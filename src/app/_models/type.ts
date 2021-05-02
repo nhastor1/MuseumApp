@@ -8,7 +8,10 @@ export enum Type {
     videoType = "video",
     audioType = "audio",
     create = "datetime-local",
-    edit = "datetime-local"
+    edit = "datetime-local",
+    dropdown = 'dropdown',
+    checkbox = 'checkbox',
+    radiobuttons = 'radiobuttons'
 }
 
 export class FileList {

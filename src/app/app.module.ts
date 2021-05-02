@@ -24,13 +24,15 @@ import { AuthenticationService, ToastrService, UserService } from './_services';
 import { SearchItemComponent } from './components/search-item/search-item.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { UserComponent } from './components/user/user.component';
+import { MaterialModule } from './material.module';
 @NgModule({
     imports: [
         BrowserModule,
         ReactiveFormsModule,
         HttpClientModule,
         AppRoutingModule,
-        FontAwesomeModule],
+        FontAwesomeModule,
+        MaterialModule],
     declarations: [
         AppComponent,
         HomeComponent,
