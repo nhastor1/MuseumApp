@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { DataService, ToastrService } from '@app/_services';
 import { Type } from '../../_models/type';
@@ -8,25 +8,13 @@ import { Type } from '../../_models/type';
   templateUrl: './input.component.html',
   styleUrls: ['./input.component.scss']
 })
-export class InputComponent implements OnInit, OnChanges {
+export class InputComponent implements OnInit {
   @Input() category: any;
   @Input() field: any;
   @Input() form: FormGroup;
   list = [];
 
   constructor(private dataService: DataService, private toastr: ToastrService) { }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if(this.field.type==Type.checkbox){
-      console.log("DOCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCA");
-      console.log(this.form.get(this.field.name).value);
-      if(!this.form.get(this.field.name).value)
-        this.form.get(this.field.name).setValue('');
-        console.log("DOCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCA2");
-      console.log(this.form.get(this.field.name).value);
-      console.log(this.form)
-    }
-  }
 
   ngOnInit(): void {
     if(this.field.type==Type.dropdown || this.field.type == Type.radiobuttons){

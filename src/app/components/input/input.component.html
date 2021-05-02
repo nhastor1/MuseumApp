@@ -29,14 +29,19 @@
         </select>
     </div>
     <div *ngSwitchCase="'checkbox'">
-        <!-- <input type="checkbox" id="{{ field.name }}" name="{{ field.name }}" [formControlName]="field.name"> -->
-        <mat-checkbox id="{{ field.name }}" name="{{ field.name }}" [formControlName]="field.name"></mat-checkbox>
+        <input type="checkbox" id="{{ field.name }}" name="{{ field.name }}" [formControlName]="field.name">
+        <!-- <mat-checkbox id="{{ field.name }}" name="{{ field.name }}" [formControlName]="field.name"></mat-checkbox> -->
     </div>
     <div *ngSwitchCase="'radiobuttons'">
-        <div *ngFor="let el of list">
+        <!-- <div *ngFor="let el of list">
             <input type="radio" id="{{ el }}" name="{{ field.name }}" [formControlName]="field.name">
             <label for="{{ el }}">{{ el }}</label>
-        </div>
+        </div> -->
+        <mat-radio-group [formControlName]="field.name">
+            <mat-radio-button class="radio-buttons" *ngFor="let el of list" [value]="el">
+                {{el}}
+            </mat-radio-button>
+        </mat-radio-group>
     </div>
     <div *ngSwitchCase="'text-area'">
         <textarea class="col-12 form-control-lg" id="{{ field.name }}" name="{{ field.name }}" rows="4" [formControlName]="field.name"></textarea>

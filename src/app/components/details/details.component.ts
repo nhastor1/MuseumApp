@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService, DataService, ToastrService } from '@app/_services';
+import { Type } from '../../_models/type';
 
 @Component({
   selector: 'app-details',
@@ -37,7 +38,7 @@ export class DetailsComponent implements OnInit {
         tempCatKey = this.currentDataKey.substring(0, this.currentDataKey.indexOf('_'));
       if(results.map(a => a.key).includes(tempCatKey)){
         this.searchForm.get('category').setValue(tempCatKey);
-        this.currentCategory = tempCatKey;
+        //this.currentCategory = tempCatKey;
         this.onChangeCategory(tempCatKey);
       }
       else{
@@ -104,8 +105,13 @@ export class DetailsComponent implements OnInit {
     let obj = {};
     let i=0;
     if(data)
-      for(var key of Object.keys(data))
+      for(var key of Object.keys(data)){
         obj[key] = [data[key]]
+        // for checkbox
+        if(data[key] == "false"){
+          obj[key] = '';
+        }
+      }
     else
       for(var res of results)
         obj[res.name] = [''];
