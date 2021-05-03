@@ -67,6 +67,8 @@ const SEARCH = 'search';
 const NAZIV = 'Naziv';
 keys = [];
 
+//client.del(DROPDOWN + ":" + categories[0].key + "_" + "Starost");
+//client.del(RADIOBUTTONS + ":" + categories[0].key + "_" + "Stoljece");
 setTimeout(renewDatabase, 300);
 setTimeout(getCategories, 1000);
 
@@ -93,11 +95,13 @@ function getCategories(){
 function renewDatabase(){
   var enterCategories = [];
   // dropdown list and radio buttons
-  client.sadd(DROPDOWN + ":" + categories[0].key + "_" + "Starost", [
+  //client.del(DROPDOWN + ":" + categories[0].key + "_" + "Starost");
+  client.lpush(DROPDOWN + ":" + categories[0].key + "_" + "Starost", [
     "Bas staro", "Srednje staro", "Novo"
   ]);
 
-  client.sadd(RADIOBUTTONS + ":" + categories[0].key + "_" + "Stoljece", [
+  //client.del(RADIOBUTTONS + ":" + categories[0].key + "_" + "Stoljece");
+  client.lpush(RADIOBUTTONS + ":" + categories[0].key + "_" + "Stoljece", [
     "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"
   ]);
 
@@ -218,7 +222,7 @@ app.get('/category', verifyRead, function(req,res){
 
 app.get('/list', verifyRead, function(req, res){
   let url = URL.parse(req.url,true).query;
-  client.smembers(url.type + ":" + url.category + "_" + url.name, function(err, results){
+  client.lrange(url.type + ":" + url.category + "_" + url.name, 0, -1, function(err, results){
     if(err || !results || results.length == 0)
       res.json({error: "No such data"});
     else
