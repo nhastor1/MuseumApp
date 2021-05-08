@@ -16,7 +16,7 @@ const TOKEN_TIME = 1 * 60 * 60 * 1000;
 //const TOKEN_TIME = 1 * 30 * 1000;
 
 // Port
-const PORT = 3000;
+const PORT = 4000;
 
 // Init app
 const app = express();
