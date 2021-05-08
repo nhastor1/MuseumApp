@@ -1,0 +1,20 @@
+name: MainServer CI - CD
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+      steps:
+        - name: Deploy Main Server
+          uses: appleboy/ssh-action@v0.1.4
+          with:
+            host: ${{secrets.SSH_HOST}}
+            key: ${{secrets.SSH_KEY}}
+            username: ${{secrets.SSH_USERNAME}}
+
+            script: |
+              ./deployScript.sh
+              echo 'Radi'
