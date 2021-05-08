@@ -17,4 +17,4 @@ jobs:
 
           script: |
             ./deployScript.sh
-            echo 'Radi test'
+            echo 'Radi...'
