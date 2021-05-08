@@ -7,14 +7,14 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-      steps:
-        - name: Deploy Main Server
-          uses: appleboy/ssh-action@v0.1.4
-          with:
-            host: ${{secrets.SSH_HOST}}
-            key: ${{secrets.SSH_KEY}}
-            username: ${{secrets.SSH_USERNAME}}
+    steps:
+      - name: Deploy Main Server
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{secrets.SSH_HOST}}
+          key: ${{secrets.SSH_KEY}}
+          username: ${{secrets.SSH_USERNAME}}
 
-            script: |
-              ./deployScript.sh
-              echo 'Radi'
+          script: |
+            ./deployScript.sh
+            echo 'Radi'
