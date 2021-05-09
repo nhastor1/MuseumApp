@@ -13,6 +13,8 @@ export class ErrorInterceptor implements HttpInterceptor {
         const user = this.authenticationService.userValue;
         const isLoggedIn = user && user.token;
         const isApiUrl = request.url.startsWith(environment.apiUrl);
+        if(request.url.startsWith(environment.apiUrl + "/login"))
+            this.isRefreshing = false;
         //console.log("isLoggedIn: " + isLoggedIn + " - isApiUrl: " + isApiUrl + " - !this.isRefreshing: " + !this.isRefreshing)
         if (isLoggedIn && isApiUrl && !this.isRefreshing) {
             request = this.addToken(request, this.authenticationService.userValue.token);
@@ -34,6 +36,7 @@ export class ErrorInterceptor implements HttpInterceptor {
             return this.authenticationService.refreshToken()
                 .pipe(
                     switchMap((token: any) => {
+                        console.log("REFRES TOKEN FINISH");
                         this.isRefreshing = false;
                         this.refreshTokenSubject.next(token);
                         return this.handleRequest(this.addToken(request, token), next);

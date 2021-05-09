@@ -31,6 +31,7 @@ export class AuthenticationService {
                 if(!user.message){
                     console.log(user);
                     localStorage.setItem('user', JSON.stringify(user));
+                    //this.autoLogOut();
                     this.userSubject.next(user);
                 }
                 return user;
@@ -52,6 +53,7 @@ export class AuthenticationService {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 if(!user.message){
                     localStorage.setItem('user', JSON.stringify(user));
+                    //this.autoLogOut();
                     this.userSubject.next(user);
                 }
                 return user.token;
