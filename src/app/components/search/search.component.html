@@ -1,4 +1,4 @@
-<main id="main">
+<main id="main" class="out-conatiner">
 
     <form action="" id="form_search" [formGroup]="form" (ngSubmit)="search()">
       <section class="row justify-content-center">
@@ -7,7 +7,7 @@
           <option *ngFor="let category of categories" value="{{ category.key }}">{{ category.name }}</option>
         </select> -->
         <input formControlName="search" id="textSearch" type="text" class="form-select-lg col-md-5">
-        <input id="btnSearch" type="submit" class="form-select-lg col-md-2" value="Pretraga">
+        <input id="btnSearch" type="submit" class="form-select-lg col-md-2" value="Search">
       </section>
     </form>
 
@@ -17,14 +17,14 @@
         <div class="row">
           <div class="col-lg-12">
             <ul id="portfolio-flters">
-              <li id= "li_*" data-filter="*" (click)="changeFilter('*')" [ngClass]="{'filter-active' : filter == '*'}">Sve kategorije</li>
+              <li id= "li_*" data-filter="*" (click)="changeFilter('*')" [ngClass]="{'filter-active' : filter == '*'}">All categories</li>
               <li *ngFor="let category of categories" (click)="changeFilter(category.key)" [ngClass]="{'filter-active' : filter == category.key}" data-filter="{{'.filter-' + category.key}}"  id="{{'li_' + category.key}}">{{ category.name }}</li>
             </ul>
           </div>
         </div>
 
         <div id="itemsContainer" class="row portfolio-container" data-aos="fade-up" data-aos-easing="ease-in-out" data-aos-duration="500">
-          <div *ngFor="let item of results" class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+          <div *ngFor="let item of results">
             <app-search-item [item]="item" [filter]="filter"></app-search-item>
           </div>
           

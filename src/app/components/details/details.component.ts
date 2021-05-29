@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService, DataService, ToastrService } from '@app/_services';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Type } from '../../_models/type';
 
 @Component({
@@ -24,6 +25,8 @@ export class DetailsComponent implements OnInit {
   currentDataKey = null;
   loading = false;
   first = true;
+  loading2 = false;
+  faTrash = faTrash;
 
   constructor(public authService: AuthenticationService, private route: ActivatedRoute,
     private dataService: DataService, private formBuilder: FormBuilder,
@@ -117,6 +120,15 @@ export class DetailsComponent implements OnInit {
         obj[res.name] = [''];
     console.log(obj);
     this.form = this.formBuilder.group(obj);
+  }
+
+  onDeleteObject(e){
+    e.preventDefault();
+    console.log(this.currentDataKey);
+    this.dataService.deleteData(this.currentDataKey).subscribe((res) => {
+      this.toastr.warning("Succefully deleted data");
+      this.router.navigate(['search']);
+    })
   }
   
 }

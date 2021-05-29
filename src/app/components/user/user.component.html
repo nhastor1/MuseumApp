@@ -1,9 +1,10 @@
 <main id="main">
     <section id="contact" class="contact" style="margin-top: 100px;">
-        <div class="container" data-aos="fade-up">
+        <div class="container out-conatiner" data-aos="fade-up">
       
           <div class="section-title">
-              <h2>Unesite podatke o profilu</h2>
+              <h2 *ngIf="isCreate">Enter new account info</h2>
+              <h2 *ngIf="!isCreate">Account details</h2>
           </div>
       
           <div class="row d-flex justify-content-center">

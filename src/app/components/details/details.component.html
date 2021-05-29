@@ -3,14 +3,14 @@
     <section class="breadcrumbs">
     
       <section id="contact" class="contact">
-        <div class="container" data-aos="fade-up">
+        <div class="container out-conatiner" data-aos="fade-up">
   
           <div class="section-title">
-              <h2>Podaci o artifaktu</h2>
+              <h2>Artifact data</h2>
           </div>
   
           <div class="row d-flex justify-content-center">
-              <div class="col-lg-8 d-flex align-items-stretch">
+              <div class="col-lg-10 d-flex align-items-stretch">
                 <div class="php-email-form roundCorners">
                   <form id="form" [formGroup]="searchForm">
                     <div >
@@ -48,7 +48,16 @@
                         </div>
                         <div *ngIf="!loading">Save</div>
                       </button>
-                    </div>           
+                      <button class="btn btn-link" class="btn-delete" (click)="onDeleteObject($event)">
+                        <div *ngIf="loading2">
+                          <span id="loadSpan2" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        </div>
+                        <div *ngIf="!loading2"><fa-icon [icon]="faTrash"></fa-icon></div>
+                      </button>
+                    </div>
+                    <div class="text-center" *ngIf="this.authService.isUpdateOrAdmin()">
+                      
+                    </div>      
   
                   </form>
                 </div>

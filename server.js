@@ -69,7 +69,7 @@ keys = [];
 
 //client.del(DROPDOWN + ":" + categories[0].key + "_" + "Starost");
 //client.del(RADIOBUTTONS + ":" + categories[0].key + "_" + "Stoljece");
-//setTimeout(renewDatabase, 300);
+setTimeout(renewDatabase, 300);
 setTimeout(getCategories, 1000);
 
 function getCategories(){
@@ -336,57 +336,6 @@ app.post('/file/:fileId', verifyUpdate, function(req,res,next) {
 }
 );
 
-// app.get('/image/:fileId', verifyRead, function(req,res,next) {
-//   //grab it from file:[fileId]
-//   clientBuff.get(req.params.fileId,function(err,value) {
-//     if (err) { 
-//       next(err); 
-//     } 
-//     else {
-//       if (!value) {
-//         next(); // no value means a next which is likely a 404
-//       } else {
-//         res.setHeader('Content-Type','image/jpeg'); // set this to whatever you need or use some sort of mime type detection
-//         res.json(value); //send the value and end the connection
-//       }
-//     }
-//   });
-// });
-
-// app.get('/video/:fileId'/*, verifyRead*/, function(req,res,next) {
-//   //grab it from file:[fileId]
-//   clientBuff.get(req.params.fileId,function(err,value) {
-//     if (err) { 
-//       next(err); 
-//     } 
-//     else {
-//       if (!value) {
-//         next(); // no value means a next which is likely a 404
-//       } else {
-//         //res.setHeader('Content-Type','video/*'); // set this to whatever you need or use some sort of mime type detection
-//         res.end(value); //send the value and end the connection
-//       }
-//     }
-//   });
-// });
-
-// app.get('/audio/:fileId', verifyRead, function(req,res,next) {
-//   //grab it from file:[fileId]
-//   clientBuff.get(req.params.fileId,function(err,value) {
-//     if (err) { 
-//       next(err); 
-//     } 
-//     else {
-//       if (!value) {
-//         next(); // no value means a next which is likely a 404
-//       } else {
-//         res.setHeader('Content-Type','audio/*'); // set this to whatever you need or use some sort of mime type detection
-//         res.json(value); //send the value and end the connection
-//       }
-//     }
-//   });
-// });
-
 app.get('/file/:fileId', verifyRead, function(req,res,next) {
   //grab it from file:[fileId]
   clientBuff.get(req.params.fileId,function(err,value) {
@@ -437,6 +386,41 @@ app.get('/obj/:key', verifyRead, function(req, res, next){
         delete results[CREATE];
         delete results[EDIT];
         res.json(results);
+      }
+    }
+  });
+});
+
+app.delete('/obj/:key', verifyUpdate, function(req, res, next){
+  let catKey = req.params.key.split("_")[0];
+  client.hgetall(req.params.key, function(err, results){
+    if (err) { 
+      next(err); 
+    } 
+    else {
+      if (!results) {
+        next();
+      } else {
+        // check for files to delete
+        client.hgetall(catKey, function(err, resultsCat){
+          if (err) { 
+            next(err); 
+          } 
+          else {
+            if (!resultsCat) {
+              next();
+            } else {
+              for(let el of Object.keys(resultsCat)){
+                if(FILES.includes(resultsCat[el]))
+                  client.del(results[el]);
+              }
+            }
+          }
+        });
+        deleteSearch(results[NAZIV], req.params.key);
+        client.del(req.params.key, function(err, resultsDel){
+          res.json(resultsDel)
+        });
       }
     }
   });

@@ -11,7 +11,7 @@
           <li *ngIf="this.authService.isUpdateOrAdmin()"><a class="nav-item nav-link" routerLinkActive="active" routerLink="/create">Create</a></li>
           <li><a class="nav-item nav-link" routerLinkActive="active" routerLink="/search">Search</a></li>
           <li><a class="nav-item nav-link" routerLinkActive="active" routerLink="/details">Details</a></li>
-          <li class="dropdown"><a href="#"><span>Account</span> <i class="bi bi-chevron-down"></i></a>
+          <li class="dropdown"><a href="/profile"><span>Account</span> <fa-icon style="margin-left: 5px;" [icon]="faChevronDown"></fa-icon></a>
             <ul>
               <li><a class="nav-item nav-link" routerLinkActive="active" routerLink="/profile">Profile</a></li>
               <li><a class="nav-item nav-link" routerLinkActive="active" routerLink="/changePassword">Change password</a></li>
@@ -19,6 +19,7 @@
               <li><a class="nav-item nav-link" (click)="logout()">Logout</a></li>
             </ul>
           </li>
+          <li><a class="nav-item nav-link" routerLinkActive="active" routerLink="/profile">Welcome, {{this.user.firstname}}</a></li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav>

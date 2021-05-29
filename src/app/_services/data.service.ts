@@ -115,6 +115,10 @@ export class DataService{
         })
     }
 
+    deleteData(dataKey){
+        return this.http.delete(`${environment.apiUrl}/obj/${dataKey}`);
+    }
+
     private downloadFile(data: any) {
         const blob = new Blob([data], { type: '*/*' });
         const url= window.URL.createObjectURL(blob);

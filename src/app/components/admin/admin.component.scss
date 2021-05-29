@@ -2,10 +2,39 @@
     margin-bottom: 0px;
 }
 
-button{
-    min-width: 80px;
-}
+// button{
+//     min-width: 80px;
+// }
 
 .margin-top-20{
     margin-top: 20px;
+}
+
+.btn-edit{
+    color: blue;
+}
+
+.btn-delete{
+    color: red;
+}
+
+table{
+    background-color: white;
+    border-radius: 25px;
+
+    thead{
+        tr{
+            th:first-child{
+                border-radius: 25px 0 0 0;
+            }
+
+            th:last-child{
+                border-radius: 0 25px 0 0;
+            }
+        }
+    }
+
+    tbody td {
+        font-size: large;
+    }
 }
