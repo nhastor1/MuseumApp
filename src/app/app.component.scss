@@ -1,0 +1,28 @@
+.mobile-nav{
+    min-width: 100%;
+    background-color: rgb(30, 67, 86);
+    color: white;
+    position: absolute;
+    top: 80px;
+    left: 0px;
+    margin-bottom: 20px;
+
+    ul{
+        list-style-type: none;
+        padding: 0;
+
+        li{
+            :hover{
+                background-color: rgb(54, 104, 129);
+            }
+
+            a{
+                color: white;
+
+                span{
+                    margin-left: 40px;
+                }
+            }
+        }
+    }
+}

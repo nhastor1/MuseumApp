@@ -94,9 +94,11 @@ ul.social-network li {
 
 #loginForm{
     border-radius: 25px;
+    margin-top: 200px;
 }
 
 #header{
-    border-radius: 50px;
-    border: 0 5px 5px 5px solid white;
+    border: 5px;
+    border-radius: 0 0 50px 50px;
+    background-color: #191919;
 }

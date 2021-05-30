@@ -21,13 +21,25 @@
           </li>
           <li><a class="nav-item nav-link" routerLinkActive="active" routerLink="/profile">Welcome, {{this.user.firstname}}</a></li>
         </ul>
-        <i class="bi bi-list mobile-nav-toggle"></i>
+        <fa-icon class="mobile-nav-toggle" [icon]="faList" (click)="mobileNavToggle()"></fa-icon>
       </nav>
 
     </div>
   </header>
 
 
-<div class="container" style="margin-top: 100px;">
+  <div class="mobile-nav" *ngIf="showMobileNavBar" (click)="onMobileNavClick()">
+    <ul>
+      <li *ngIf="this.authService.isUpdateOrAdmin()"><a class="nav-item nav-link" routerLinkActive="active" routerLink="/create"><span>Create</span></a></li>
+      <li><a class="nav-item nav-link" routerLinkActive="active" routerLink="/search"><span>Search</span></a></li>
+      <li><a class="nav-item nav-link" routerLinkActive="active" routerLink="/details"><span>Details</span></a></li>
+      <li><a class="nav-item nav-link" routerLinkActive="active" routerLink="/profile"><span>Profile</span></a></li>
+      <li><a class="nav-item nav-link" routerLinkActive="active" routerLink="/changePassword"><span>Change password</span></a></li>
+      <li *ngIf="this.authService.isAdmin()"><a class="nav-item nav-link" routerLinkActive="active" routerLink="/users"><span>Account management</span></a></li>
+      <li><a class="nav-item nav-link" (click)="logout()"><span>Logout</span></a></li>
+    </ul>
+  </div>
+
+<div class="container" [style.margin-top]="showMobileNavBar ? '400px': '100px'">
     <router-outlet></router-outlet>
 </div>

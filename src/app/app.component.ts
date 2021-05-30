@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 import { AuthenticationService } from './_services';
 import { User, Role } from './_models';
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faList } from '@fortawesome/free-solid-svg-icons';
 
 @Component({ 
     selector: 'app', 
@@ -13,6 +13,8 @@ import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 export class AppComponent {
     user: User;
     faChevronDown = faChevronDown;
+    faList = faList;
+    showMobileNavBar = false;
 
     constructor(private authService: AuthenticationService) {
         this.authService.user.subscribe(x => this.user = x);
@@ -20,5 +22,13 @@ export class AppComponent {
     
     logout() {
         this.authService.logout();
+    }
+
+    mobileNavToggle(){
+        this.showMobileNavBar = !this.showMobileNavBar;
+    }
+
+    onMobileNavClick(){
+        this.showMobileNavBar = false;
     }
 }

@@ -69,7 +69,7 @@ keys = [];
 
 //client.del(DROPDOWN + ":" + categories[0].key + "_" + "Starost");
 //client.del(RADIOBUTTONS + ":" + categories[0].key + "_" + "Stoljece");
-setTimeout(renewDatabase, 300);
+//setTimeout(renewDatabase, 300);
 setTimeout(getCategories, 1000);
 
 function getCategories(){
@@ -103,7 +103,7 @@ function renewDatabase(){
   //client.del(RADIOBUTTONS + ":" + categories[0].key + "_" + "Stoljece");
   client.lpush(RADIOBUTTONS + ":" + categories[0].key + "_" + "Stoljece", [
     "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"
-  ]);
+  ].reverse());
 
 
   // categories

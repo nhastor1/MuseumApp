@@ -45,16 +45,16 @@
   </header>
 
   <main id="main">
-    <div class="hr d-flex align-items-center header-transparent"></div>
-          <form class="box" id="loginForm" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-              <h1>Login</h1>
-              <p class="text-muted"> Please enter your login and password!</p> 
-              <input type="text" name="username" formControlName="username" placeholder="Username"> 
-              <input type="password" name="password" formControlName="password" placeholder="Password"> 
-              <p *ngIf="textDanger" class="text-danger" id="txtDanger">{{ textDanger }}</p> 
-              <a class="forgot text-muted" href="#">Forgot password?</a>
-              <input type="submit" name="" value="Login" href="#">
-          </form>
+    <!-- <div class="hr d-flex align-items-center header-transparent"></div> -->
+    <form class="box" id="loginForm" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <h1>Login</h1>
+        <p class="text-muted"> Please enter your login and password!</p> 
+        <input type="text" name="username" formControlName="username" placeholder="Username"> 
+        <input type="password" name="password" formControlName="password" placeholder="Password"> 
+        <p *ngIf="textDanger" class="text-danger" id="txtDanger">{{ textDanger }}</p> 
+        <a class="forgot text-muted" href="#">Forgot password?</a>
+        <input type="submit" name="" value="Login" href="#">
+    </form>
   </main>
 
   
