@@ -70,7 +70,7 @@ keys = [];
 
 //client.del(DROPDOWN + ":" + categories[0].key + "_" + "Starost");
 //client.del(RADIOBUTTONS + ":" + categories[0].key + "_" + "Stoljece");
-//setTimeout(renewDatabase, 300);
+setTimeout(renewDatabase, 300);
 setTimeout(getCategories, 1000);
 
 function getCategories(){
