@@ -43,7 +43,8 @@ export class DataService{
     }
 
     getFile(type, key){
-        type = "file";
+        if(type!="pdf")
+            type = "file";
         console.log(`${environment.apiUrl}/${type}/${key}`)
         return this.http.get(`${environment.apiUrl}/${type}/${key}`, {responseType: 'arraybuffer'})
             .pipe(map((response) => this.sanitizer.bypassSecurityTrustResourceUrl(this.downloadFile(response))));

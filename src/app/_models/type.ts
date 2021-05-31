@@ -15,7 +15,7 @@ export enum Type {
 }
 
 export class FileList {
-    files = ["image", "video", "audio"];
+    files = ["image", "video", "audio", "pdf"];
 
     isFile(type){
         return this.files.includes(type);

@@ -23,6 +23,12 @@
             <app-media [audio]="form.get(field.name)"></app-media>
         </div>
     </div>
+    <div *ngSwitchCase="'pdf'">
+        <input class="col-12 form-control-lg" type="file" accept="application/pdf" name="{{ field.name }}" id="{{ field.name }}" [formControlName]="field.name" (change)="onFileSelect($event)">
+        <div>
+            <app-media [pdf]="form.get(field.name)" [form]="form" [name]="field.name"></app-media>
+        </div>
+    </div>
     <div *ngSwitchCase="'dropdown'">
         <select class="col-12 form-control-lg" name="{{ field.name }}" id="{{ field.name }}" [formControlName]="field.name">
             <option *ngFor="let el of list" value="{{ el }}">{{ el }}</option>

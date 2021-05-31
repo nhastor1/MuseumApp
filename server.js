@@ -45,6 +45,7 @@ const DATE = 'date';
 const IMAGE = 'image';
 const VIDEO = 'video';
 const AUDIO = 'audio';
+const PDF = 'pdf';
 const DROPDOWN = 'dropdown';
 const CHECKBOX = 'checkbox';
 const RADIOBUTTONS = 'radiobuttons';
@@ -57,7 +58,7 @@ const FIRSTNAME = 'firstname';
 const LASTNAME = 'lastname';
 const ROLE = 'role';
 const ROLES = ['Admin', 'Update', 'Read'];
-const FILES = [VIDEO, IMAGE, AUDIO];
+const FILES = [VIDEO, IMAGE, AUDIO, PDF];
 
 categories = [{category:'middleAges', name:'Middle ages', key:'middleAgesKey'}, {category:'prehistory', name:'Prehistory', key:'prehistoryKey'}
   , {category:'materialCulture', name:'Material Culture', key:'materialCultureKey'}];
@@ -115,6 +116,7 @@ function renewDatabase(){
       NAZIV, STRING,
       'Starost', INTEGER,
       'Datum porijekla', DATE,
+      'Pdf dokument', PDF,
       'Slika', IMAGE,
       'Video', VIDEO
     ]);
@@ -348,6 +350,24 @@ app.get('/file/:fileId', verifyRead, function(req,res,next) {
       } else {
         //console.log("DObro je");
         //res.setHeader('Content-Type','viedo/*'); // set this to whatever you need or use some sort of mime type detection
+        res.end(value); //send the value and end the connection
+      }
+    }
+  });
+});
+
+app.get('/pdf/:fileId', verifyRead, function(req,res,next) {
+  //grab it from file:[fileId]
+  clientBuff.get(req.params.fileId,function(err,value) {
+    if (err) { 
+      next(err); 
+    } 
+    else {
+      if (!value) {
+        next(); // no value means a next which is likely a 404
+      } else {
+        //console.log("DObro je");
+        res.setHeader('Content-Type','application/pdf'); // set this to whatever you need or use some sort of mime type detection
         res.end(value); //send the value and end the connection
       }
     }

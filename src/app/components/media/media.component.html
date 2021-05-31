@@ -2,4 +2,5 @@
     <img *ngIf="image && file" [src]="file" alt="No image">
     <video *ngIf="video && file" [src]="file" controls></video>
     <audio *ngIf="audio && file" [src]="file" controls></audio>
+    <a *ngIf="pdf && file" [href]="file" download="{{form.controls.Naziv.value}}_{{name}}.pdf">Download {{form.controls.Naziv.value}}_{{name}}.pdf</a>
 </div>
