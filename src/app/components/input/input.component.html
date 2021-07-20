@@ -52,4 +52,8 @@
     <div *ngSwitchCase="'text-area'">
         <textarea class="col-12 form-control-lg" id="{{ field.name }}" name="{{ field.name }}" rows="4" [formControlName]="field.name"></textarea>
     </div>
+    <div *ngSwitchCase="'location'">
+        <input class="col-12 form-control-lg" type="text" name="{{ field.name }}" id="{{ field.name }}" [formControlName]="field.name" style="margin-bottom: 10px;" disabled/>
+        <app-input-maps class="col-12 form-control-lg" [cords]="form.get(field.name)" id="{{ field.name }}" name="{{ field.name }}" (changeCoordinates)="onChangeCoordinates($event)"></app-input-maps>
+    </div>
 </div>

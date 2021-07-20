@@ -2,6 +2,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AgmCoreModule} from '@agm/core';
 
 // used to create fake backend
 //import { fakeBackendProvider } from './_helpers';
@@ -25,6 +26,7 @@ import { SearchItemComponent } from './components/search-item/search-item.compon
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { UserComponent } from './components/user/user.component';
 import { MaterialModule } from './material.module';
+import { InputMapsComponent } from './components/input-maps/input-maps.component';
 @NgModule({
     imports: [
         BrowserModule,
@@ -32,7 +34,11 @@ import { MaterialModule } from './material.module';
         HttpClientModule,
         AppRoutingModule,
         FontAwesomeModule,
-        MaterialModule],
+        MaterialModule,
+        AgmCoreModule.forRoot({
+            apiKey: 'AIzaSyB2v9zgiEoqOKF_efwYxwL9MmR9CRP3dso'
+        })
+    ],
     declarations: [
         AppComponent,
         HomeComponent,
@@ -46,7 +52,9 @@ import { MaterialModule } from './material.module';
         InputComponent,
         MediaComponent,
         SearchItemComponent,
-        UserComponent],
+        UserComponent,
+        InputMapsComponent,
+    ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
         AuthenticationService,

@@ -10,13 +10,15 @@ const saltRounds = 10;
 const jwt = require('jsonwebtoken');
 const session = require('express-session');
 const cors = require('cors');
+//const Keywords = require('./api/models/keywords.js');
 
-const SECRETKEY = 'shhhhh';
+const SECRETKEY = 'ssssshhh';//process.env.SECRETKEY;
 const TOKEN_TIME = 1 * 60 * 60 * 1000;
 //const TOKEN_TIME = 1 * 30 * 1000;
 
 // Port
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+console.log(2, process.env.PORT)
 
 // Init app
 const app = express();
@@ -51,6 +53,7 @@ const CHECKBOX = 'checkbox';
 const RADIOBUTTONS = 'radiobuttons';
 const CREATE = 'create';
 const EDIT = 'edit';
+const LOCATION = 'location';
 
 const USERNAME = 'username';
 const PASSWORD = 'password';
@@ -61,7 +64,7 @@ const ROLES = ['Admin', 'Update', 'Read'];
 const FILES = [VIDEO, IMAGE, AUDIO, PDF];
 
 categories = [{category:'middleAges', name:'Middle ages', key:'middleAgesKey'}, {category:'prehistory', name:'Prehistory', key:'prehistoryKey'}
-  , {category:'materialCulture', name:'Material Culture', key:'materialCultureKey'}];
+  , {category:'materialCulture', name:'Material Culture', key:'materialCultureKey'}, {category:'etnology', name:'Etnologija', key:'etnologyKey'}];
 allCategories = {};
 const CATEGORY = 'category';
 const SEARCH = 'search';
@@ -70,7 +73,7 @@ keys = [];
 
 //client.del(DROPDOWN + ":" + categories[0].key + "_" + "Starost");
 //client.del(RADIOBUTTONS + ":" + categories[0].key + "_" + "Stoljece");
-setTimeout(renewDatabase, 300);
+//setTimeout(renewDatabase, 300);
 setTimeout(getCategories, 1000);
 
 function getCategories(){
@@ -106,35 +109,65 @@ function renewDatabase(){
     "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"
   ].reverse());
 
+  client.lpush(RADIOBUTTONS + ":" + categories[3].key + "_" + "Stanje", [
+    "Novo", "Staro"
+  ].reverse());
+
+  client.lpush(DROPDOWN + ":" + categories[3].key + "_" + "Način nabavke", [
+    "Poklon", "Otkup", "Pronalazak"
+  ].reverse());
+
 
   // categories
   for(var i=0; i<categories.length; i++){
     enterCategories.push('name' + i, categories[i].name,
       'key' + i, categories[i].key);
     if(i==2)
-    client.hmset(categories[i].key, [
-      NAZIV, STRING,
-      'Starost', INTEGER,
-      'Datum porijekla', DATE,
-      'Pdf dokument', PDF,
-      'Slika', IMAGE,
-      'Video', VIDEO
-    ]);
+      client.hmset(categories[i].key, [
+        NAZIV, STRING,
+        'Starost', INTEGER,
+        'Datum porijekla', DATE,
+        'Pdf dokument', PDF,
+        'Slika', IMAGE,
+        'Video', VIDEO
+      ]);
     else if (i==0)
-    client.hmset(categories[i].key, [
-      NAZIV, STRING,
-      'Stoljece', RADIOBUTTONS,
-      'Pne', CHECKBOX,
-      'Starost', DROPDOWN,
-      'Opis', TEXTAREA,
-      'Video', VIDEO
-    ]);
+      client.hmset(categories[i].key, [
+        NAZIV, STRING,
+        'Stoljece', RADIOBUTTONS,
+        'Pne', CHECKBOX,
+        'Starost', DROPDOWN,
+        'Opis', TEXTAREA,
+        'Lokacija', LOCATION,
+        'Video', VIDEO
+      ]);
+    else if(i==1)
+      client.hmset(categories[i].key, [
+        NAZIV, STRING,
+        'Starost', INTEGER,
+        'Datum i vrijeme porijekla', DATE_TIME,
+        'Pjesma', AUDIO
+      ]);
     else
     client.hmset(categories[i].key, [
       NAZIV, STRING,
-      'Starost', INTEGER,
-      'Datum i vrijeme porijekla', DATE_TIME,
-      'Pjesma', AUDIO
+      'Invertarski broj', STRING,
+      'Broj komada', INTEGER,
+      'Naziv', STRING,
+      'Zbirka', STRING,
+      'Opština', STRING,
+      'Etnografsko-geografska oblast', STRING,
+      'Republika, pokrajina', STRING,
+      'Opis', TEXTAREA,
+      'Mjere', TEXTAREA,
+      'Fotografija', IMAGE,
+      'Tehnika i način obrade', TEXTAREA,
+      'Istorijat predmeta', TEXTAREA,
+      'Podaci o prodavcu - darodavcu', TEXTAREA,
+      'Stanje', RADIOBUTTONS,
+      'Način nabavke', DROPDOWN,
+      'Obradio', STRING,
+      'Datum obrade', DATE
     ]);
   }
   client.hmset(CATEGORY, enterCategories);
@@ -224,7 +257,9 @@ app.get('/category', verifyRead, function(req,res){
 
 app.get('/list', verifyRead, function(req, res){
   let url = URL.parse(req.url,true).query;
+  console.log(url.type + ":" + url.category + "_" + url.name);
   client.lrange(url.type + ":" + url.category + "_" + url.name, 0, -1, function(err, results){
+    console.log(results);
     if(err || !results || results.length == 0)
       res.json({error: "No such data"});
     else
@@ -563,29 +598,6 @@ app.get('/search', verifyRead, function(req, res, next){
           searchFinish(req, res, next, objectKeys);
       }
     })
-    // client.hget(SEARCH, element, function(err, results){
-    //   if (err) { 
-    //     next(err); 
-    //   } 
-    //   else {
-    //     if (results) {
-    //       client.smembers(results, function(err, results2){
-    //         if(results2){
-    //           objectKeys = objectKeys.concat(results2);
-    //           if(--counter==0)
-    //             searchFinish(req, res, next, objectKeys);
-    //         }
-    //         else{
-    //           if(--counter==0)
-    //             searchFinish(req, res, next, objectKeys);
-    //         }
-    //       });
-    //     } else {
-    //       if(--counter==0)
-    //         searchFinish(req, res, next, objectKeys);
-    //     }
-    //   }
-    // });
   }
 });
 

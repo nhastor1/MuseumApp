@@ -18,7 +18,7 @@ export class InputComponent implements OnInit {
 
   ngOnInit(): void {
     if(this.field.type==Type.dropdown || this.field.type == Type.radiobuttons){
-      this.dataService.getList(this.field.type, "middleAgesKey", this.field.name).subscribe((response) => {
+      this.dataService.getList(this.field.type, this.category, this.field.name).subscribe((response) => {
         if(response.error)
           this.toastr.warning(response.error);
         else
@@ -33,4 +33,9 @@ export class InputComponent implements OnInit {
     this.form.controls[this.field.name].setValue(event.target.files[0]);
   }
 
+  onChangeCoordinates(e){
+    var temp = {};
+    temp[this.field.name] = e.lat() + "," + e.lng();
+    this.form.patchValue(temp);
+  }
 }
