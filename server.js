@@ -73,7 +73,7 @@ keys = [];
 
 //client.del(DROPDOWN + ":" + categories[0].key + "_" + "Starost");
 //client.del(RADIOBUTTONS + ":" + categories[0].key + "_" + "Stoljece");
-//setTimeout(renewDatabase, 300);
+setTimeout(renewDatabase, 300);
 setTimeout(getCategories, 1000);
 
 function getCategories(){
@@ -113,7 +113,7 @@ function renewDatabase(){
     "Novo", "Staro"
   ].reverse());
 
-  client.lpush(DROPDOWN + ":" + categories[3].key + "_" + "Način nabavke", [
+  client.lpush(DROPDOWN + ":" + categories[3].key + "_" + "Nacin nabavke", [
     "Poklon", "Otkup", "Pronalazak"
   ].reverse());
 
@@ -165,7 +165,7 @@ function renewDatabase(){
       'Istorijat predmeta', TEXTAREA,
       'Podaci o prodavcu - darodavcu', TEXTAREA,
       'Stanje', RADIOBUTTONS,
-      'Način nabavke', DROPDOWN,
+      'Nacin nabavke', DROPDOWN,
       'Obradio', STRING,
       'Datum obrade', DATE
     ]);
